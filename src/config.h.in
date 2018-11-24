@@ -1,0 +1,5 @@
+/* define if the compiler supports basic C++11 syntax */
+#cmakedefine HAVE_CXX11
+
+/* Define to 1 if you have the <mmintrin.h> header file. */
+#cmakedefine HAVE_MMINTRIN_H

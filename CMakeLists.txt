@@ -1,0 +1,87 @@
+cmake_minimum_required(VERSION 3.12)
+project(pyresid VERSION 0.1.0 LANGUAGES CXX)
+
+include(CheckCXXSourceCompiles)
+include(CheckIncludeFileCXX)
+include(FindPython3)
+
+find_package(Python3 COMPONENTS Interpreter Development REQUIRED)
+find_package(Boost COMPONENTS python3 REQUIRED)
+
+message(STATUS "Python3_LIBRARIES = ${Python3_LIBRARIES}")
+message(STATUS "Python3_EXECUTABLE = ${Python3_EXECUTABLE}")
+message(STATUS "Python3_INCLUDE_DIRS = ${Python3_INCLUDE_DIRS}")
+message(STATUS "Boost_LIBRARIES = ${Boost_LIBRARIES}")
+
+enable_testing()
+
+check_cxx_source_compiles("
+int main(void) { if (__builtin_expect(0, 0)) return 1; return 0; }
+" HAVE_BUILTIN_EXPECT)
+check_include_file_cxx(mmintrin.h HAVE_MMINTRIN_H)
+
+set(CMAKE_CXX_STANDARD 11)
+set(PACKAGE_VERSION ${PROJECT_VERSION})
+set(RESID_INLINE inline)
+set(RESID_INLINING 1)
+set(RESID_BRANCH_HINTS 1)
+set(HAVE_CXX11 1)
+
+configure_file(src/residfp/siddefs-fp.h.in siddefs-fp.h)
+configure_file(src/config.h.in config.h)
+
+set(HEADER_FILES
+        ${CMAKE_CURRENT_BINARY_DIR}/siddefs-fp.h
+        ${CMAKE_CURRENT_BINARY_DIR}/config.h
+        src/residfp/resample/Resampler.h
+        src/residfp/resample/SincResampler.h
+        src/residfp/resample/TwoPassSincResampler.h
+        src/residfp/resample/ZeroOrderResampler.h
+        src/residfp/array.h
+        src/residfp/Dac.h
+        src/residfp/EnvelopeGenerator.h
+        src/residfp/EnvelopeGenerator.h
+        src/residfp/Filter.h
+        src/residfp/Filter6581.h
+        src/residfp/Filter8580.h
+        src/residfp/FilterModelConfig.h
+        src/residfp/FilterModelConfig8580.h
+        src/residfp/Integrator.h
+        src/residfp/Integrator8580.h
+        src/residfp/OpAmp.h
+        src/residfp/Potentiometer.h
+        src/residfp/SID.h
+        src/residfp/Spline.h
+        src/residfp/Voice.h
+        src/residfp/WaveformCalculator.h
+        src/residfp/WaveformGenerator.h
+        src/sidcxx11.h)
+set(SOURCE_FILES
+        src/residfp/resample/SincResampler.cpp
+        src/residfp/Dac.cpp
+        src/residfp/EnvelopeGenerator.cpp
+        src/residfp/ExternalFilter.cpp
+        src/residfp/Filter.cpp
+        src/residfp/Filter6581.cpp
+        src/residfp/Filter8580.cpp
+        src/residfp/FilterModelConfig.cpp
+        src/residfp/FilterModelConfig8580.cpp
+        src/residfp/Integrator.cpp
+        src/residfp/Integrator8580.cpp
+        src/residfp/OpAmp.cpp
+        src/residfp/SID.cpp
+        src/residfp/Spline.cpp
+        src/residfp/version.cc
+        src/residfp/WaveformCalculator.cpp
+        src/residfp/WaveformGenerator.cpp
+        src/pyresidfp.cpp)
+add_library(pyresidfp SHARED
+        ${HEADER_FILES} ${SOURCE_FILES})
+target_link_libraries(pyresidfp PRIVATE Boost::python3 Python3::Python)
+target_include_directories(pyresidfp
+        PRIVATE ${Boost_INCLUDE_DIRS} ${Python3_INCLUDE_DIRS} ${CMAKE_CURRENT_BINARY_DIR} ${CMAKE_CURRENT_SOURCE_DIR}
+        src/residfp src/residfp/resample)
+target_compile_definitions(pyresidfp PRIVATE HAVE_CONFIG_H)
+set_property(TARGET pyresidfp PROPERTY CXX_STANDARD_REQUIRED true)
+set_property(TARGET pyresidfp PROPERTY CXX_STANDARD 11)
+set_property(TARGET pyresidfp PROPERTY PREFIX "_")
