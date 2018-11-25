@@ -1,4 +1,3 @@
-.gitignore
 .idea/
 build/
 cmake-build*/
