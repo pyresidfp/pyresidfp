@@ -698,15 +698,16 @@ PYBIND11_MODULE(_pyresidfp, m) {
                It has been claimed that this fading happens in an orderly fashion,
                however sampling of write only registers reveals that this is not the case.
 
-               NOTE: This is not correctly modeled.
+               Note:
+                   This is not correctly modeled.
 
-               The actual use of write only registers has largely been made
-               in the belief that all SID registers are readable.
-               To support this belief the read would have to be done immediately
-               after a write to the same register (remember that an intermediate write
-               to another register would yield that value instead).
-               With this in mind we return the last value written to any SID register
-               for $2000 cycles without modeling the bit fading.
+                   The actual use of write only registers has largely been made
+                   in the belief that all SID registers are readable.
+                   To support this belief the read would have to be done immediately
+                   after a write to the same register (remember that an intermediate write
+                   to another register would yield that value instead).
+                   With this in mind we return the last value written to any SID register
+                   for $2000 cycles without modeling the bit fading.
 
                Args:
                    offset (int): SID register to read
@@ -744,7 +745,7 @@ PYBIND11_MODULE(_pyresidfp, m) {
                    samples (int): Number of audio samples to compute
 
                Returns:
-                    List of int samples in range 0-65535
+                    :obj:`list` of :obj:`int` samples in range 0-65535
             )pbdoc")
 
             .def("set_filter_6581_curve", &reSIDfp::SID::setFilter6581Curve, R"pbdoc(
