@@ -705,18 +705,6 @@ PYBIND11_MODULE(_pyresidfp, m) {
                     List of int samples in range 0-65535
             )pbdoc")
 
-            .def("clock_silent", &reSIDfp::SID::clockSilent, R"pbdoc(
-               Clock SID forward with no audio production.
-
-               Warning:
-               You can't mix this method of clocking with the audio-producing
-               clock() because components that don't affect OSC3/ENV3 are not
-               emulated.
-
-               Args:
-                   cycles (int): clocks to clock.
-            )pbdoc")
-
             .def("set_filter_6581_curve", &reSIDfp::SID::setFilter6581Curve, R"pbdoc(
                Set filter curve parameter for 6581 model.
 
