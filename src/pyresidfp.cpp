@@ -20,6 +20,7 @@
 
 
 #include <pybind11/pybind11.h>
+#include <pybind11/stl.h>
 
 #include "SID.h"
 
@@ -695,7 +696,13 @@ PYBIND11_MODULE(_pyresidfp, m) {
                    RuntimeError
                )pbdoc")
 
-            .def("clock", &reSIDfp::SID::clock, R"pbdoc(
+            .def("clock", [](reSIDfp::SID &sid, std::size_t samples) {
+                // use pybind11 stl container binding to change signature to data-flow style
+                std::vector<short> result(samples);
+                int realSamples = sid.clock(static_cast<unsigned int>(samples), result.data());
+                result.resize(static_cast<std::size_t >(realSamples));
+                return result;
+            }, R"pbdoc(
                Clock SID forward using chosen output sampling algorithm.
 
                Args:
