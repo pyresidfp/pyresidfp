@@ -26,6 +26,17 @@
 
 namespace py = pybind11;
 
+static std::unique_ptr<reSIDfp::SID>
+createInitialized(reSIDfp::ChipModel chipModel, reSIDfp::SamplingMethod method, double clockFrequency,
+                  double samplingFrequency, double highestAccurateFrequency) {
+    std::unique_ptr<reSIDfp::SID> result(new reSIDfp::SID());
+    // initialize resampler to avoid segfault when calling clock() before set_sampling_parameters
+    result->reset();
+    result->setChipModel(chipModel);
+    result->setSamplingParameters(clockFrequency, method, samplingFrequency, highestAccurateFrequency);
+    return result;
+}
+
 PYBIND11_MODULE(_pyresidfp, m) {
     py::register_exception_translator([](std::exception_ptr p) {
         try {
@@ -605,14 +616,67 @@ PYBIND11_MODULE(_pyresidfp, m) {
                       +-----------+
             )pbdoc")
 
-            .def(py::init<>())
+            .def(py::init(&createInitialized), R"pbdoc(
+               Creates a new instance of SID and sets sampling parameters.
+
+               Use a clock freqency of 985248Hz for PAL C64, 1022730Hz for NTSC C64.
+               The default end of passband frequency is pass_freq = 0.9*sample_freq/2
+               for sample frequencies up to ~ 44.1kHz, and 20kHz for higher sample frequencies.
+
+               For resampling, the ratio between the clock frequency and the sample frequency
+               is limited as follows: 125*clock_freq/sample_freq < 16384
+               E.g. provided a clock frequency of ~ 1MHz, the sample frequency can not be set
+               lower than ~ 8kHz. A lower sample frequency would make the resampling code
+               overfill its 16k sample ring buffer.
+
+               The end of passband frequency is also limited: pass_freq <= 0.9*sample_freq/2
+
+               E.g. for a 44.1kHz sampling rate the end of passband frequency
+               is limited to slightly below 20kHz.
+               This constraint ensures that the FIR table is not overfilled.
+
+               Args:
+                   chipModel (_pyresidfp.ChipModel):   Chip model to emulate
+                   method (_pyresidfp.SamplingMethod): Sampling method to use
+                   clockFrequency (float):             System clock frequency at Hz
+                   samplingFrequency (float):          Desired output sampling rate
+                   highestAccurateFrequency (double):  Low-pass cutoff frequency
+
+               Raises:
+                   RuntimeError
+
+               Examples:
+                   Construct an emulated MOS 6581 chip with resampling sample method, PAL clock frequency,
+                   and a sampling frequency of 48kHz:
+
+                   >>> sid = SID(ChipModel.MOS6581, SamplingMethod.RESAMPLE, 985248.0, 48000.0, 20000.0)
+            )pbdoc")
 
             .def_property("chip_model", &reSIDfp::SID::getChipModel, &reSIDfp::SID::setChipModel, R"pbdoc(
                pyresidfp.ChipModel: Chip model to emulate.
             )pbdoc")
 
-            .def("reset", &reSIDfp::SID::reset, R"pbdoc(
-               SID reset.
+            .def("reset", [](reSIDfp::SID& sid, reSIDfp::ChipModel chipModel,
+                             reSIDfp::SamplingMethod method, double clockFrequency, double samplingFrequency,
+                             double highestAccurateFrequency) {
+                sid.reset();
+                sid.setChipModel(chipModel);
+                sid.setSamplingParameters(clockFrequency, method, samplingFrequency, highestAccurateFrequency);
+            }, R"pbdoc(
+               Resets chip model, voice registers, filters and sampling method.
+
+               Note:
+                   See constructor documentation.
+
+               Args:
+                   chipModel (_pyresidfp.ChipModel):   Chip model to emulate
+                   method (_pyresidfp.SamplingMethod): Sampling method to use
+                   clockFrequency (float):             System clock frequency at Hz
+                   samplingFrequency (float):          Desired output sampling rate
+                   highestAccurateFrequency (double):  Low-pass cutoff frequency
+
+               Raises:
+                   RuntimeError
             )pbdoc")
 
             .def("input", &reSIDfp::SID::input, R"pbdoc(
@@ -666,35 +730,6 @@ PYBIND11_MODULE(_pyresidfp, m) {
                    channel (int): Channel to modify
                    enable (bool): enable muting
             )pbdoc")
-
-            .def("set_sampling_parameters", &reSIDfp::SID::setSamplingParameters, R"pbdoc(
-               Setting of SID sampling parameters.
-
-               Use a clock freqency of 985248Hz for PAL C64, 1022730Hz for NTSC C64.
-               The default end of passband frequency is pass_freq = 0.9*sample_freq/2
-               for sample frequencies up to ~ 44.1kHz, and 20kHz for higher sample frequencies.
-
-               For resampling, the ratio between the clock frequency and the sample frequency
-               is limited as follows: 125*clock_freq/sample_freq < 16384
-               E.g. provided a clock frequency of ~ 1MHz, the sample frequency can not be set
-               lower than ~ 8kHz. A lower sample frequency would make the resampling code
-               overfill its 16k sample ring buffer.
-
-               The end of passband frequency is also limited: pass_freq <= 0.9*sample_freq/2
-
-               E.g. for a 44.1kHz sampling rate the end of passband frequency
-               is limited to slightly below 20kHz.
-               This constraint ensures that the FIR table is not overfilled.
-
-               Args:
-                   clockFrequency (float): System clock frequency at Hz
-                   method (_pyresidfp.SamplingMethod): Sampling method to use
-                   samplingFrequency (float): Desired output sampling rate
-                   highestAccurateFrequency (double): Low-pass cutoff frequency
-
-               Raises:
-                   RuntimeError
-               )pbdoc")
 
             .def("clock", [](reSIDfp::SID &sid, std::size_t samples) {
                 // use pybind11 stl container binding to change signature to data-flow style
