@@ -1,17 +1,8 @@
 cmake_minimum_required(VERSION 3.12)
-project(pyresid VERSION 0.1.0 LANGUAGES CXX)
+project(pyresidfp VERSION 0.1.0 LANGUAGES CXX)
 
 include(CheckCXXSourceCompiles)
 include(CheckIncludeFileCXX)
-include(FindPython3)
-
-find_package(Python3 COMPONENTS Interpreter Development REQUIRED)
-find_package(Boost COMPONENTS python3 REQUIRED)
-
-message(STATUS "Python3_LIBRARIES = ${Python3_LIBRARIES}")
-message(STATUS "Python3_EXECUTABLE = ${Python3_EXECUTABLE}")
-message(STATUS "Python3_INCLUDE_DIRS = ${Python3_INCLUDE_DIRS}")
-message(STATUS "Boost_LIBRARIES = ${Boost_LIBRARIES}")
 
 enable_testing()
 
@@ -75,13 +66,14 @@ set(SOURCE_FILES
         src/residfp/WaveformCalculator.cpp
         src/residfp/WaveformGenerator.cpp
         src/pyresidfp.cpp)
-add_library(pyresidfp SHARED
+
+add_subdirectory(pybind11)
+
+pybind11_add_module(_pyresidfp SHARED
         ${HEADER_FILES} ${SOURCE_FILES})
-target_link_libraries(pyresidfp PRIVATE Boost::python3 Python3::Python)
-target_include_directories(pyresidfp
-        PRIVATE ${Boost_INCLUDE_DIRS} ${Python3_INCLUDE_DIRS} ${CMAKE_CURRENT_BINARY_DIR} ${CMAKE_CURRENT_SOURCE_DIR}
+target_include_directories(_pyresidfp
+        PRIVATE ${CMAKE_CURRENT_BINARY_DIR} ${CMAKE_CURRENT_SOURCE_DIR}
         src/residfp src/residfp/resample)
-target_compile_definitions(pyresidfp PRIVATE HAVE_CONFIG_H)
-set_property(TARGET pyresidfp PROPERTY CXX_STANDARD_REQUIRED true)
-set_property(TARGET pyresidfp PROPERTY CXX_STANDARD 11)
-set_property(TARGET pyresidfp PROPERTY PREFIX "_")
+target_compile_definitions(_pyresidfp PRIVATE HAVE_CONFIG_H)
+set_property(TARGET _pyresidfp PROPERTY CXX_STANDARD_REQUIRED true)
+set_property(TARGET _pyresidfp PROPERTY CXX_STANDARD 11)

@@ -19,21 +19,24 @@
  */
 
 
-#include <boost/python.hpp>
+#include <pybind11/pybind11.h>
 
 #include "SID.h"
-using namespace boost::python;
+namespace py = pybind11;
 
-void sid_error_translator(reSIDfp::SIDError const& x) {
-    PyErr_SetString(PyExc_UserWarning, x.getMessage());
-}
-
-BOOST_PYTHON_MODULE(_pyresidfp)
+PYBIND11_MODULE(_pyresidfp, m)
 {
-    register_exception_translator<reSIDfp::SIDError>(sid_error_translator);
+    py::register_exception_translator([](std::exception_ptr p) {
+        try {
+            if (p) std::rethrow_exception(p);
+        } catch (const reSIDfp::SIDError &e) {
+            PyErr_SetString(PyExc_RuntimeError, e.getMessage());
+        }
+    });
 
-    class_<reSIDfp::SID, boost::noncopyable>("SID", "MOS6581/MOS8580 emulation.")
-            .add_property("chip_model", &reSIDfp::SID::getChipModel, &reSIDfp::SID::setChipModel,
+    py::class_<reSIDfp::SID>(m, "SID", "MOS6581/MOS8580 emulation.")
+            .def(py::init<>())
+            .def_property("chip_model", &reSIDfp::SID::getChipModel, &reSIDfp::SID::setChipModel,
                     "Chip model to emulate.")
             .def("reset", &reSIDfp::SID::reset,
                     "SID reset.")
@@ -97,12 +100,12 @@ BOOST_PYTHON_MODULE(_pyresidfp)
                     "Enable filter emulation.")
             ;
 
-    enum_<reSIDfp::ChipModel>("ChipModel")
+    py::enum_<reSIDfp::ChipModel>(m, "ChipModel")
             .value("MOS6581", reSIDfp::ChipModel::MOS6581)
             .value("MOS8580", reSIDfp::ChipModel::MOS8580)
             ;
 
-    enum_<reSIDfp::SamplingMethod>("SamplingMethod")
+    py::enum_<reSIDfp::SamplingMethod>(m, "SamplingMethod")
             .value("DECIMATE", reSIDfp::SamplingMethod::DECIMATE)
             .value("RESAMPLE", reSIDfp::SamplingMethod::RESAMPLE)
             ;
