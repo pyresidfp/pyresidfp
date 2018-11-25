@@ -75,5 +75,6 @@ target_include_directories(_pyresidfp
         PRIVATE ${CMAKE_CURRENT_BINARY_DIR} ${CMAKE_CURRENT_SOURCE_DIR}
         src/residfp src/residfp/resample)
 target_compile_definitions(_pyresidfp PRIVATE HAVE_CONFIG_H)
+target_compile_definitions(_pyresidfp PRIVATE PROJECT_VERSION)
 set_property(TARGET _pyresidfp PROPERTY CXX_STANDARD_REQUIRED true)
 set_property(TARGET _pyresidfp PROPERTY CXX_STANDARD 11)
