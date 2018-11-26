@@ -745,7 +745,7 @@ PYBIND11_MODULE(_pyresidfp, m) {
                    samples (int): Number of audio samples to compute
 
                Returns:
-                    :obj:`list` of :obj:`int` samples in range 0-65535
+                    :obj:`list` of :obj:`int` samples in range -32768 to 32767
             )pbdoc")
 
             .def("set_filter_6581_curve", &reSIDfp::SID::setFilter6581Curve, R"pbdoc(
