@@ -22,26 +22,17 @@
 #include <pybind11/pybind11.h>
 #include <pybind11/stl.h>
 
-#include "SID.h"
+#include "PythonSid.h"
 
 namespace py = pybind11;
-
-static std::unique_ptr<reSIDfp::SID>
-createInitialized(reSIDfp::ChipModel chipModel, reSIDfp::SamplingMethod method, double clockFrequency,
-                  double samplingFrequency, double highestAccurateFrequency) {
-    std::unique_ptr<reSIDfp::SID> result(new reSIDfp::SID());
-    // initialize resampler to avoid segfault when calling clock() before set_sampling_parameters
-    result->reset();
-    result->setChipModel(chipModel);
-    result->setSamplingParameters(clockFrequency, method, samplingFrequency, highestAccurateFrequency);
-    return result;
-}
+namespace sid = reSIDfp;
+namespace pysid = pyreSIDfp;
 
 PYBIND11_MODULE(_pyresidfp, m) {
     py::register_exception_translator([](std::exception_ptr p) {
         try {
             if (p) std::rethrow_exception(p);
-        } catch (const reSIDfp::SIDError &e) {
+        } catch (const sid::SIDError &e) {
             PyErr_SetString(PyExc_RuntimeError, e.getMessage());
         }
     });
@@ -65,31 +56,31 @@ PYBIND11_MODULE(_pyresidfp, m) {
 #endif
 
 
-    py::enum_<reSIDfp::ChipModel>(m, "ChipModel", R"pbdoc(
+    py::enum_<sid::ChipModel>(m, "ChipModel", R"pbdoc(
                Chip models to emulate.
             )pbdoc")
 
-            .value("MOS6581", reSIDfp::ChipModel::MOS6581, R"pbdoc(
+            .value("MOS6581", sid::ChipModel::MOS6581, R"pbdoc(
                The original MOS 6581 chip included in C64
             )pbdoc")
 
-            .value("MOS8580", reSIDfp::ChipModel::MOS8580, R"pbdoc(
+            .value("MOS8580", sid::ChipModel::MOS8580, R"pbdoc(
                The revised MOS 8580 chip included in C64C
             )pbdoc");
 
-    py::enum_<reSIDfp::SamplingMethod>(m, "SamplingMethod", R"pbdoc(
+    py::enum_<sid::SamplingMethod>(m, "SamplingMethod", R"pbdoc(
                Method to sample emulated anologue output.
             )pbdoc")
 
-            .value("DECIMATE", reSIDfp::SamplingMethod::DECIMATE, R"pbdoc(
+            .value("DECIMATE", sid::SamplingMethod::DECIMATE, R"pbdoc(
                Single-pass down-sampling
             )pbdoc")
 
-            .value("RESAMPLE", reSIDfp::SamplingMethod::RESAMPLE, R"pbdoc(
+            .value("RESAMPLE", sid::SamplingMethod::RESAMPLE, R"pbdoc(
                Two-pass resampling
             )pbdoc");
 
-    py::class_<reSIDfp::SID>(m, "SID", R"pbdoc(
+    py::class_<::pysid::PythonSid>(m, "SID", R"pbdoc(
                MOS6581/MOS8580 emulation.
 
                Filter for 6581 chip
@@ -616,7 +607,7 @@ PYBIND11_MODULE(_pyresidfp, m) {
                       +-----------+
             )pbdoc")
 
-            .def(py::init(&createInitialized), R"pbdoc(
+            .def(py::init<sid::ChipModel, sid::SamplingMethod, double, double>(), R"pbdoc(
                Creates a new instance of SID and sets sampling parameters.
 
                Use a clock freqency of 985248Hz for PAL C64, 1022730Hz for NTSC C64.
@@ -629,18 +620,11 @@ PYBIND11_MODULE(_pyresidfp, m) {
                lower than ~ 8kHz. A lower sample frequency would make the resampling code
                overfill its 16k sample ring buffer.
 
-               The end of passband frequency is also limited: pass_freq <= 0.9*sample_freq/2
-
-               E.g. for a 44.1kHz sampling rate the end of passband frequency
-               is limited to slightly below 20kHz.
-               This constraint ensures that the FIR table is not overfilled.
-
                Args:
                    chipModel (_pyresidfp.ChipModel):   Chip model to emulate
                    method (_pyresidfp.SamplingMethod): Sampling method to use
                    clockFrequency (float):             System clock frequency at Hz
                    samplingFrequency (float):          Desired output sampling rate
-                   highestAccurateFrequency (double):  Low-pass cutoff frequency
 
                Raises:
                    RuntimeError
@@ -649,37 +633,33 @@ PYBIND11_MODULE(_pyresidfp, m) {
                    Construct an emulated MOS 6581 chip with resampling sample method, PAL clock frequency,
                    and a sampling frequency of 48kHz:
 
-                   >>> sid = SID(ChipModel.MOS6581, SamplingMethod.RESAMPLE, 985248.0, 48000.0, 20000.0)
+                   >>> sid = SID(ChipModel.MOS6581, SamplingMethod.RESAMPLE, 985248.0, 48000.0)
             )pbdoc")
 
-            .def_property("chip_model", &reSIDfp::SID::getChipModel, &reSIDfp::SID::setChipModel, R"pbdoc(
-               pyresidfp.ChipModel: Chip model to emulate.
+            .def_property("chip_model", &::pysid::PythonSid::getChipModel, &::pysid::PythonSid::setChipModel, R"pbdoc(
+               _pyresidfp.ChipModel: Chip model to emulate.
             )pbdoc")
 
-            .def("reset", [](reSIDfp::SID& sid, reSIDfp::ChipModel chipModel,
-                             reSIDfp::SamplingMethod method, double clockFrequency, double samplingFrequency,
-                             double highestAccurateFrequency) {
-                sid.reset();
-                sid.setChipModel(chipModel);
-                sid.setSamplingParameters(clockFrequency, method, samplingFrequency, highestAccurateFrequency);
-            }, R"pbdoc(
+            .def_property("sampling_method", &::pysid::PythonSid::getSamplingMethod, &::pysid::PythonSid::setSamplingMethod, R"pbdoc(
+               _pyresidfp.SamplingMethod: Sampling method to use
+            )pbdoc")
+
+            .def_property("clock_frequency", &::pysid::PythonSid::getClockFrequency, &::pysid::PythonSid::setClockFrequency, R"pbdoc(
+               float: Clock frequency of chip to emulate
+            )pbdoc")
+
+            .def_property("sampling_frequency", &::pysid::PythonSid::getSamplingFrequency, &::pysid::PythonSid::setSamplingFrequency, R"pbdoc(
+               float: Frequency at which to sample output
+            )pbdoc")
+
+            .def("reset", &::pysid::PythonSid::reset, R"pbdoc(
                Resets chip model, voice registers, filters and sampling method.
-
-               Note:
-                   See constructor documentation.
-
-               Args:
-                   chipModel (_pyresidfp.ChipModel):   Chip model to emulate
-                   method (_pyresidfp.SamplingMethod): Sampling method to use
-                   clockFrequency (float):             System clock frequency at Hz
-                   samplingFrequency (float):          Desired output sampling rate
-                   highestAccurateFrequency (double):  Low-pass cutoff frequency
 
                Raises:
                    RuntimeError
             )pbdoc")
 
-            .def("input", &reSIDfp::SID::input, R"pbdoc(
+            .def("input", &::pysid::PythonSid::input, R"pbdoc(
                16-bit input (EXT IN). Write 16-bit sample to audio input. NB! The caller
                is responsible for keeping the value within 16 bits. Note that to mix in
                an external audio signal, the signal should be resampled to 1MHz first to\
@@ -689,7 +669,7 @@ PYBIND11_MODULE(_pyresidfp, m) {
                    value (int): Input level to set
             )pbdoc")
 
-            .def("read", &reSIDfp::SID::read, R"pbdoc(
+            .def("read", &::pysid::PythonSid::read, R"pbdoc(
                Read registers.
 
                Reading a write only register returns the last char written to any SID register.
@@ -716,7 +696,7 @@ PYBIND11_MODULE(_pyresidfp, m) {
                    char: Value read from chip
             )pbdoc")
 
-            .def("write", &reSIDfp::SID::write, R"pbdoc(
+            .def("write", &::pysid::PythonSid::write, R"pbdoc(
                Write registers.
 
                Args:
@@ -724,7 +704,7 @@ PYBIND11_MODULE(_pyresidfp, m) {
                    value  (char): Value to write
             )pbdoc")
 
-            .def("mute", &reSIDfp::SID::mute, R"pbdoc(
+            .def("mute", &::pysid::PythonSid::mute, R"pbdoc(
                SID voice muting.
 
                Args:
@@ -732,37 +712,36 @@ PYBIND11_MODULE(_pyresidfp, m) {
                    enable (bool): enable muting
             )pbdoc")
 
-            .def("clock", [](reSIDfp::SID &sid, std::size_t samples) {
-                // use pybind11 stl container binding to change signature to data-flow style
-                std::vector<short> result(samples);
-                int realSamples = sid.clock(static_cast<unsigned int>(samples), result.data());
-                result.resize(static_cast<std::size_t >(realSamples));
-                return result;
-            }, R"pbdoc(
-               Clock SID forward using chosen output sampling algorithm.
+            .def("clock", &::pysid::PythonSid::clock, R"pbdoc(
+               Clock SID forward using chosen output sampling algorithm and sample.
+
+               Note:
+                   The number of samples is equal to
+
+                   samples = samplingFrequency * cycles / clockFrequency
 
                Args:
-                   samples (int): Number of audio samples to compute
+                   cycles (int): Number of clock cycles to forward
 
                Returns:
                     :obj:`list` of :obj:`int` samples in range -32768 to 32767
             )pbdoc")
 
-            .def("set_filter_6581_curve", &reSIDfp::SID::setFilter6581Curve, R"pbdoc(
+            .def("set_filter_6581_curve", &::pysid::PythonSid::setFilter6581Curve, R"pbdoc(
                Set filter curve parameter for 6581 model.
 
                Args:
                    curvePosition (float): 0 .. 1, where 0 sets center frequency high ("light") and 1 sets it low ("dark"), default is 0.5
             )pbdoc")
 
-            .def("set_filter_8580_curve", &reSIDfp::SID::setFilter8580Curve, R"pbdoc(
+            .def("set_filter_8580_curve", &::pysid::PythonSid::setFilter8580Curve, R"pbdoc(
                Set filter curve parameter for 8580 model.
 
                Args:
                    curvePosition (float):
             )pbdoc")
 
-            .def("enable_filter", &reSIDfp::SID::enableFilter, R"pbdoc(
+            .def("enable_filter", &::pysid::PythonSid::enableFilter, R"pbdoc(
                Enable filter emulation.
 
                Args:

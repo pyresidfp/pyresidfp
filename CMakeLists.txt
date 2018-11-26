@@ -46,7 +46,8 @@ set(HEADER_FILES
         src/residfp/Voice.h
         src/residfp/WaveformCalculator.h
         src/residfp/WaveformGenerator.h
-        src/sidcxx11.h)
+        src/sidcxx11.h
+        src/PythonSid.h)
 set(SOURCE_FILES
         src/residfp/resample/SincResampler.cpp
         src/residfp/Dac.cpp
@@ -65,7 +66,8 @@ set(SOURCE_FILES
         src/residfp/version.cc
         src/residfp/WaveformCalculator.cpp
         src/residfp/WaveformGenerator.cpp
-        src/pyresidfp.cpp)
+        src/pyresidfp.cpp
+        src/PythonSid.cpp)
 
 add_subdirectory(pybind11)
 
