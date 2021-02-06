@@ -92,13 +92,15 @@ setup(
     name='pyresidfp',
     version='0.1.0',
     author='Sebastian Klemke',
-    author_email='packet@nerdheim.de',
+    author_email='pypi@nerdheim.de',
     description='Emulates the SID sound-chip',
     long_description=long_description,
     long_description_content_type='text/markdown',
     url='https://github.com/packet23/pyresidfp',
     packages=find_packages(),
     classifiers=[
+        'Programming Language :: Python :: 3',
+        'Programming Language :: Python :: 3.6',
         'Programming Language :: Python :: 3 :: Only',
         'Programming Language :: C++',
         'License :: OSI Approved :: GNU General Public License v2 or later (GPLv2+)',
@@ -113,5 +115,5 @@ setup(
     # add custom build_ext command
     cmdclass=dict(build_ext=CMakeBuild),
     zip_safe=False,
-    python_requires='>=3',
+    python_requires='>=3.6',
 )
