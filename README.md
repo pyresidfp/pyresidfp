@@ -6,7 +6,7 @@ Emulates the SID sound-chip in software. The C++ emulation code was copied over 
 ## How to install
 
 Requirements:
-- cmake 3.12+
+- cmake 3.15+
 - compiler for ISO C++11
 - Python 3 and libpython include files
 
@@ -21,8 +21,7 @@ python -m pip install pyresidfp
 
 ### From cloned git repository 
 
-Clone repository with `--recursive` flag to also clone submodule
-[pybind11](https://github.com/pybind/pybind11). Build from source using
+Build from source using
 ```commandline
 python -m build
 ```

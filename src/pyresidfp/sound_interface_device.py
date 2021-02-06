@@ -21,7 +21,7 @@ import logging
 from enum import Enum
 from typing import Any, Callable, Dict, Tuple
 
-from _pyresidfp import ChipModel, SID, SamplingMethod
+from ._pyresidfp import ChipModel, SID, SamplingMethod
 
 from .musical_scale import Tone
 from .registers import ReadableRegister, WritableRegister
