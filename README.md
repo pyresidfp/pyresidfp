@@ -3,23 +3,33 @@
 Emulates the SID sound-chip in software. The C++ emulation code was copied over from
 [libsidplayfp](https://sourceforge.net/projects/sidplay-residfp/).
 
+## How to install
 
-## How to Build
-
-Clone repository with `--recursive` flag to also clone submodule
-[pybind11](https://github.com/pybind/pybind11). Build from source using
-```commandline
-python setup.py bdist_egg
-```
-and install using
-```commandline
-pip install dist/pyresidfp-*.whl
-```
 Requirements:
 - cmake 3.12+
 - compiler for ISO C++11
 - Python 3 and libpython include files
 
+
+### From PyPI
+
+Install the latest version using
+```commandline
+python -m pip install pyresidfp
+```
+
+
+### From cloned git repository 
+
+Clone repository with `--recursive` flag to also clone submodule
+[pybind11](https://github.com/pybind/pybind11). Build from source using
+```commandline
+python -m build
+```
+and install using
+```commandline
+python -m pip install dist/pyresidfp-*.whl
+```
 
 ## Example
 
