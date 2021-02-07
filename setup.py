@@ -35,7 +35,7 @@ with open('README.md', 'r') as fh:
 
 setup(
     name='pyresidfp',
-    version='0.3',
+    version='0.4.dev0',
     author='Sebastian Klemke',
     author_email='pypi@nerdheim.de',
     description='Emulates the SID sound-chip',
