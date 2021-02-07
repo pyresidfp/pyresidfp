@@ -1,17 +1,18 @@
-cmake_minimum_required(VERSION 3.15...3.18)
+cmake_minimum_required(VERSION 3.18)
 project(pyresidfp VERSION 0.1.0 LANGUAGES CXX)
 
 # Currently, Scikit-build does not support FindPython, so we convert the
 # provided hints ourselves.
 if(SKBUILD)
+  message(STATUS "The project is built using scikit-build")
   set(Python_EXECUTABLE "${PYTHON_EXECUTABLE}")
   set(Python_INCLUDE_DIR "${PYTHON_INCLUDE_DIR}")
-  set(Python_LIBRARY "${PYTHON_LIBRARY}")
+  set(DUMMY "${PYTHON_LIBRARY}")
   set(DUMMY "${PYTHON_VERSION_STRING}")  # Not needed, silences a warning
 endif()
 
 set(Python_FIND_IMPLEMENTATIONS CPython PyPy)  # PyPy requires 3.18
-find_package(Python REQUIRED COMPONENTS Interpreter Development)
+find_package(Python REQUIRED COMPONENTS Interpreter Development.Module)
 
 # Scikit-Build does not add your site-packages to the search path automatically,
 # so we need to add it _or_ the pybind11 specific directory here.

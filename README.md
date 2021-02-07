@@ -1,14 +1,16 @@
 # pyresidfp
 
+[![Build Status](https://travis-ci.org/pyresidfp/pyresidfp.svg?branch=master)](https://travis-ci.org/pyresidfp/pyresidfp)
+![PyPI](https://img.shields.io/pypi/v/pyresidfp)
+
 Emulates the SID sound-chip in software. The C++ emulation code was copied over from
 [libsidplayfp](https://sourceforge.net/projects/sidplay-residfp/).
 
 ## How to install
 
 Requirements:
-- cmake 3.15+
 - compiler for ISO C++11
-- Python 3 and libpython include files
+- Python 3 and header files
 
 
 ### From PyPI
