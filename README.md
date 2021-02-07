@@ -1,7 +1,7 @@
 # pyresidfp
 
 [![Build Status](https://travis-ci.org/pyresidfp/pyresidfp.svg?branch=master)](https://travis-ci.org/pyresidfp/pyresidfp)
-![PyPI](https://img.shields.io/pypi/v/pyresidfp)
+[![PyPI](https://img.shields.io/pypi/v/pyresidfp)](https://pypi.org/project/pyresidfp/)
 
 Emulates the SID sound-chip in software. The C++ emulation code was copied over from
 [libsidplayfp](https://sourceforge.net/projects/sidplay-residfp/).
