@@ -41,7 +41,7 @@ setup(
     description='Emulates the SID sound-chip',
     long_description=long_description,
     long_description_content_type='text/markdown',
-    url='https://github.com/packet23/pyresidfp',
+    url='https://github.com/pyresidfp/pyresidfp',
     classifiers=[
         'Programming Language :: Python :: 3',
         'Programming Language :: Python :: 3.6',
