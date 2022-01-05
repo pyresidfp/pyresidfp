@@ -32,10 +32,21 @@ include(CheckIncludeFileCXX)
 
 enable_testing()
 
+if(CMAKE_CXX_COMPILER_ID MATCHES "Clang")
+  set(USE_CLANG TRUE)
+elseif(CMAKE_CXX_COMPILER_ID MATCHES "GNU")
+  set(USE_GCC TRUE)
+endif()
+
+if(USE_GCC OR USE_CLANG)
+  check_include_file_cxx(mmintrin.h HAVE_MMINTRIN_H)
+else()
+  set(HAVE_MMINTRIN_H FALSE)
+endif()
+
 check_cxx_source_compiles("
 int main(void) { if (__builtin_expect(0, 0)) return 1; return 0; }
 " HAVE_BUILTIN_EXPECT)
-check_include_file_cxx(mmintrin.h HAVE_MMINTRIN_H)
 
 set(CMAKE_CXX_STANDARD 11)
 set(PACKAGE_VERSION ${PROJECT_VERSION})
