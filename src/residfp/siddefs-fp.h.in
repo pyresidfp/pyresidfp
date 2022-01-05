@@ -21,10 +21,10 @@
 #define SIDDEFS_FP_H
 
 // Compilation configuration.
-#define RESID_BRANCH_HINTS @RESID_BRANCH_HINTS@
+#cmakedefine01 RESID_BRANCH_HINTS
 
 // Compiler specifics.
-#define HAVE_BUILTIN_EXPECT @HAVE_BUILTIN_EXPECT@
+#cmakedefine01 HAVE_BUILTIN_EXPECT
 
 #ifndef M_PI
 #  define M_PI    3.14159265358979323846
@@ -56,7 +56,7 @@ const char* residfp_version_string = "@PACKAGE_VERSION@";
 }
 
 // Inlining on/off.
-#define RESID_INLINING @RESID_INLINING@
+#cmakedefine01 RESID_INLINING
 #define RESID_INLINE @RESID_INLINE@
 
 #endif // SIDDEFS_FP_H
