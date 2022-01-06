@@ -27,6 +27,7 @@
 #include <limits>
 
 #include "array.h"
+#include "Dac.h"
 #include "Filter6581.h"
 #include "Filter8580.h"
 #include "Potentiometer.h"
@@ -36,6 +37,10 @@
 
 namespace reSIDfp
 {
+
+const unsigned int ENV_DAC_BITS = 8;
+const unsigned int OSC_DAC_BITS = 12;
+
 
 /**
  * Bus value stays alive for some time after each operation.
@@ -114,14 +119,15 @@ void SID::voiceSync(bool sync)
 
     for (int i = 0; i < 3; i++)
     {
-        const unsigned int freq = voice[i]->wave()->readFreq();
+        WaveformGenerator* const wave = voice[i]->wave();
+        const unsigned int freq = wave->readFreq();
 
-        if (voice[i]->wave()->readTest() || freq == 0 || !voice[(i + 1) % 3]->wave()->readSync())
+        if (wave->readTest() || freq == 0 || !voice[(i + 1) % 3]->wave()->readSync())
         {
             continue;
         }
 
-        const unsigned int accumulator = voice[i]->wave()->readAccumulator();
+        const unsigned int accumulator = wave->readAccumulator();
         const unsigned int thisVoiceSync = ((0x7fffff - accumulator) & 0xffffff) / freq + 1;
 
         if (thisVoiceSync < nextVoiceSync)
@@ -151,14 +157,42 @@ void SID::setChipModel(ChipModel model)
 
     this->model = model;
 
-    // calculate waveform-related tables, feed them to the generator
+    // calculate waveform-related tables
     matrix_t* tables = WaveformCalculator::getInstance()->buildTable(model);
 
-    // update voice offsets
+    // calculate envelope DAC table
+    {
+        Dac dacBuilder(ENV_DAC_BITS);
+        dacBuilder.kinkedDac(model);
+
+        for (unsigned int i = 0; i < (1 << ENV_DAC_BITS); i++)
+        {
+            envDAC[i] = static_cast<float>(dacBuilder.getOutput(i));
+        }
+    }
+
+    // calculate oscillator DAC table
+    const bool is6581 = model == MOS6581;
+
+    {
+        Dac dacBuilder(OSC_DAC_BITS);
+        dacBuilder.kinkedDac(model);
+
+        const double offset = dacBuilder.getOutput(is6581 ? 0x380 : 0x9c0);
+
+        for (unsigned int i = 0; i < (1 << OSC_DAC_BITS); i++)
+        {
+            const double dacValue = dacBuilder.getOutput(i);
+            oscDAC[i] = static_cast<float>(dacValue - offset);
+        }
+    }
+
+    // set voice tables
     for (int i = 0; i < 3; i++)
     {
-        voice[i]->envelope()->setChipModel(model);
-        voice[i]->wave()->setChipModel(model);
+        voice[i]->envelope()->setDAC(envDAC);
+        voice[i]->wave()->setDAC(oscDAC);
+        voice[i]->wave()->setModel(is6581);
         voice[i]->wave()->setWaveformModels(tables);
     }
 }

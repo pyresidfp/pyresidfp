@@ -39,16 +39,21 @@ elseif(CMAKE_CXX_COMPILER_ID MATCHES "GNU")
 endif()
 
 if(USE_GCC OR USE_CLANG)
+  check_include_file_cxx(emmintrin.h HAVE_EMMINTRIN_H)
   check_include_file_cxx(mmintrin.h HAVE_MMINTRIN_H)
+  check_include_file_cxx(arm_neon.h HAVE_ARM_NEON_H)
 else()
+  set(HAVE_EMMINTRIN_H FALSE)
   set(HAVE_MMINTRIN_H FALSE)
+  set(HAVE_ARM_NEON_H FALSE)
 endif()
 
 check_cxx_source_compiles("
 int main(void) { if (__builtin_expect(0, 0)) return 1; return 0; }
 " HAVE_BUILTIN_EXPECT)
 
-set(CMAKE_CXX_STANDARD 11)
+set(CMAKE_CXX_STANDARD 14)
+set(CMAKE_CXX_EXTENSIONS OFF)
 set(PACKAGE_VERSION ${PROJECT_VERSION})
 set(RESID_INLINE inline)
 set(RESID_INLINING 1)
@@ -72,9 +77,9 @@ set(HEADER_FILES
         src/residfp/Filter.h
         src/residfp/Filter6581.h
         src/residfp/Filter8580.h
-        src/residfp/FilterModelConfig.h
+        src/residfp/FilterModelConfig6581.h
         src/residfp/FilterModelConfig8580.h
-        src/residfp/Integrator.h
+        src/residfp/Integrator6581.h
         src/residfp/Integrator8580.h
         src/residfp/OpAmp.h
         src/residfp/Potentiometer.h
@@ -84,6 +89,7 @@ set(HEADER_FILES
         src/residfp/WaveformCalculator.h
         src/residfp/WaveformGenerator.h
         src/sidcxx11.h
+        src/sidcxx14.h
         src/PythonSid.h)
 set(SOURCE_FILES
         src/residfp/resample/SincResampler.cpp
@@ -93,9 +99,9 @@ set(SOURCE_FILES
         src/residfp/Filter.cpp
         src/residfp/Filter6581.cpp
         src/residfp/Filter8580.cpp
-        src/residfp/FilterModelConfig.cpp
+        src/residfp/FilterModelConfig6581.cpp
         src/residfp/FilterModelConfig8580.cpp
-        src/residfp/Integrator.cpp
+        src/residfp/Integrator6581.cpp
         src/residfp/Integrator8580.cpp
         src/residfp/OpAmp.cpp
         src/residfp/SID.cpp
@@ -113,7 +119,6 @@ target_include_directories(_pyresidfp
         src/residfp src/residfp/resample)
 target_compile_definitions(_pyresidfp PRIVATE HAVE_CONFIG_H)
 target_compile_definitions(_pyresidfp PRIVATE PROJECT_VERSION)
-set_property(TARGET _pyresidfp PROPERTY CXX_STANDARD_REQUIRED true)
-set_property(TARGET _pyresidfp PROPERTY CXX_STANDARD 11)
+set_property(TARGET _pyresidfp PROPERTY CXX_STANDARD 14)
 
 install(TARGETS _pyresidfp DESTINATION .)

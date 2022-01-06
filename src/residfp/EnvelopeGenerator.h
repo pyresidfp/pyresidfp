@@ -1,7 +1,7 @@
 /*
  * This file is part of libsidplayfp, a SID player engine.
  *
- * Copyright 2011-2018 Leandro Nini <drfiemost@users.sourceforge.net>
+ * Copyright 2011-2020 Leandro Nini <drfiemost@users.sourceforge.net>
  * Copyright 2018 VICE Project
  * Copyright 2007-2010 Antti Lankila
  * Copyright 2004,2010 Dag Lem <resid@nimrod.no>
@@ -60,7 +60,7 @@ private:
     unsigned int rate;
 
     /**
-     * During release mode, the SID arpproximates envelope decay via piecewise
+     * During release mode, the SID approximates envelope decay via piecewise
      * linear decay rate.
      */
     unsigned int exponential_counter;
@@ -70,6 +70,7 @@ private:
      * decrement.
      */
     unsigned int exponential_counter_period;
+    unsigned int new_exponential_counter_period;
 
     unsigned int state_pipeline;
 
@@ -109,12 +110,8 @@ private:
     /// The ENV3 value, sampled at the first phase of the clock
     unsigned char env3;
 
-    /**
-     * Emulated nonlinearity of the envelope DAC.
-     *
-     * @See Dac
-     */
-    float dac[256];
+    /// The DAC LUT for analog output
+    float* dac; //-V730_NOINIT this is initialized in the SID constructor
 
 private:
     static const unsigned int adsrtable[16];
@@ -126,13 +123,13 @@ private:
 
 public:
     /**
-     * Set chip model.
-     * This determines the type of the analog DAC emulation:
+     * Set the analog DAC emulation:
      * 8580 is perfectly linear while 6581 is nonlinear.
+     * Must be called before any operation.
      *
-     * @param chipModel
+     * @param dac
      */
-    void setChipModel(ChipModel chipModel);
+    void setDAC(float* dac) { this->dac = dac; }
 
     /**
      * SID clocking.
@@ -154,6 +151,7 @@ public:
         rate(0),
         exponential_counter(0),
         exponential_counter_period(1),
+        new_exponential_counter_period(0),
         state_pipeline(0),
         envelope_pipeline(0),
         exponential_pipeline(0),
@@ -179,7 +177,7 @@ public:
      * Write control register.
      *
      * @param control
-     *            control register
+     *            control register value
      */
     void writeCONTROL_REG(unsigned char control);
 
@@ -202,7 +200,7 @@ public:
     /**
      * Return the envelope current value.
      *
-     * @return envelope counter
+     * @return envelope counter value
      */
     unsigned char readENV() const { return env3; }
 };
@@ -219,6 +217,12 @@ void EnvelopeGenerator::clock()
 {
     env3 = envelope_counter;
 
+    if (unlikely(new_exponential_counter_period > 0))
+    {
+        exponential_counter_period = new_exponential_counter_period;
+        new_exponential_counter_period = 0;
+    }
+
     if (unlikely(state_pipeline))
     {
         state_change();
@@ -230,11 +234,18 @@ void EnvelopeGenerator::clock()
         {
             if (state == ATTACK)
             {
-                envelope_counter++;
+                if (++envelope_counter==0xff)
+                {
+                    next_state = DECAY_SUSTAIN;
+                    state_pipeline = 3;
+                }
             }
             else if ((state == DECAY_SUSTAIN) || (state == RELEASE))
             {
-                envelope_counter--;
+                if (--envelope_counter==0x00)
+                {
+                    counter_enabled = false;
+                }
             }
 
             set_exponential_counter();
@@ -245,7 +256,7 @@ void EnvelopeGenerator::clock()
         exponential_counter = 0;
 
         if (((state == DECAY_SUSTAIN) && (envelope_counter != sustain))
-           || (state == RELEASE))
+            || (state == RELEASE))
         {
             // The envelope counter can flip from 0x00 to 0xff by changing state to
             // attack, then to release. The envelope counter will then continue
@@ -348,19 +359,29 @@ void EnvelopeGenerator::state_change()
     switch (next_state)
     {
     case ATTACK:
-        if (state_pipeline == 0)
+        if (state_pipeline == 1)
+        {
+            // The decay rate is "accidentally" enabled during first cycle of attack phase
+            rate = adsrtable[decay];
+        }
+        else if (state_pipeline == 0)
         {
             state = ATTACK;
-            // The attack rate register is correctly enabled during second cycle of attack phase
+            // The attack rate is correctly enabled during second cycle of attack phase
             rate = adsrtable[attack];
             counter_enabled = true;
         }
         break;
     case DECAY_SUSTAIN:
+        if (state_pipeline == 0)
+        {
+            state = DECAY_SUSTAIN;
+            rate = adsrtable[decay];
+        }
         break;
     case RELEASE:
         if (((state == ATTACK) && (state_pipeline == 0))
-          || ((state == DECAY_SUSTAIN) && (state_pipeline == 1)))
+            || ((state == DECAY_SUSTAIN) && (state_pipeline == 1)))
         {
             state = RELEASE;
             rate = adsrtable[release];
@@ -379,34 +400,28 @@ void EnvelopeGenerator::set_exponential_counter()
     switch (envelope_counter)
     {
     case 0xff:
-        exponential_counter_period = 1;
-        state = DECAY_SUSTAIN;
-        rate = adsrtable[decay];
+    case 0x00:
+        new_exponential_counter_period = 1;
         break;
 
     case 0x5d:
-        exponential_counter_period = 2;
+        new_exponential_counter_period = 2;
         break;
 
     case 0x36:
-        exponential_counter_period = 4;
+        new_exponential_counter_period = 4;
         break;
 
     case 0x1a:
-        exponential_counter_period = 8;
+        new_exponential_counter_period = 8;
         break;
 
     case 0x0e:
-        exponential_counter_period = 16;
+        new_exponential_counter_period = 16;
         break;
 
     case 0x06:
-        exponential_counter_period = 30;
-        break;
-
-    case 0x00:
-        exponential_counter_period = 1;
-        counter_enabled = false;
+        new_exponential_counter_period = 30;
         break;
     }
 }

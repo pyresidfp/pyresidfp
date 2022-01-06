@@ -28,7 +28,7 @@
 #include <string>
 #include <map>
 
-#include "src/residfp/array.h"
+#include "../array.h"
 
 #include "src/sidcxx11.h"
 
