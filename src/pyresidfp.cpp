@@ -127,7 +127,9 @@ PYBIND11_MODULE(_pyresidfp, m) {
                with the audio mixer and output stage, including details on intended
                relative resistor values. Also included are schematics for the NMOS FET
                voltage controlled resistors (VCRs) used to control cutoff frequency, the
-               DAC which controls the VCRs, the NMOS op-amps, and the output buffer.
+               DAC which controls the VCRs, the NMOS op-amps, and the output buffer.)pbdoc"
+	       R"pbdoc(
+
 
 
                SID filter / mixer / output
@@ -205,7 +207,8 @@ PYBIND11_MODULE(_pyresidfp, m) {
                as the apparant resistance increases with increasing drain-to-source
                voltage. If the drain-to-source voltage should approach the gate voltage
                of 12V, the NMOS FET will enter saturation mode (a.k.a. active mode), and
-               the NMOS FET will not operate anywhere like a resistor.
+               the NMOS FET will not operate anywhere like a resistor.)pbdoc"
+	       R"pbdoc(
 
 
 
@@ -257,7 +260,8 @@ PYBIND11_MODULE(_pyresidfp, m) {
 
                Note that these are only approximate values for one particular SID chip,
                due to process variations the values can be substantially different in
-               other chips.
+               other chips.)pbdoc"
+	       R"pbdoc(
 
 
 
@@ -280,7 +284,8 @@ PYBIND11_MODULE(_pyresidfp, m) {
 
                Furthermore, the control of the two VCRs imposes a load on the DAC output
                which varies with the input signals to the VCRs. This can be seen from the
-               VCR figure above.
+               VCR figure above.)pbdoc"
+	       R"pbdoc(
 
 
 
@@ -329,7 +334,8 @@ PYBIND11_MODULE(_pyresidfp, m) {
 
                Provided a reasonably high input impedance and a reasonably low output
                impedance, the "op-amp" can be modeled as a voltage transfer function
-               mapping input voltage to output voltage.
+               mapping input voltage to output voltage.)pbdoc"
+	       R"pbdoc(
 
 
 
@@ -418,7 +424,8 @@ PYBIND11_MODULE(_pyresidfp, m) {
                                +---o--[A>--o------o           o--o--[A>--o-- vo (AUDIO OUT)
                                                D1 o--/ --4R2--o (4.25R2)
                                       $18         |           |
-                                      0=open   D0 +--/ --8R2--+ (8.75R2)
+                                      0=open   D0 +--/ --8R2--+ (8.75R2))pbdoc"
+	       R"pbdoc(
 
 
 
@@ -479,7 +486,8 @@ PYBIND11_MODULE(_pyresidfp, m) {
                These data indicate that the following function for 1/Q has been
                modeled in the MOS 8580:
 
-                  1/Q = 2^(1/2)*2^(-x/8) = 2^(1/2 - x/8) = 2^((4 - x)/8)
+                  1/Q = 2^(1/2)*2^(-x/8) = 2^(1/2 - x/8) = 2^((4 - x)/8))pbdoc"
+	       R"pbdoc(
 
 
 
@@ -533,7 +541,8 @@ PYBIND11_MODULE(_pyresidfp, m) {
                                |           R         |        GND
                                            |
                               GND                   GND
-                                          GND
+                                          GND)pbdoc"
+	       R"pbdoc(
 
 
 
