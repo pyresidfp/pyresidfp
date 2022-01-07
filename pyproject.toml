@@ -9,6 +9,9 @@ requires = [
     "cmake",
     "scikit-build",
     "ninja",
-    "setuptools-git-versioning",
+    "setuptools-git-versioning>=1.8.0",
 ]
 build-backend = "setuptools.build_meta"
+
+[tool.setuptools-git-versioning]
+enabled = true
