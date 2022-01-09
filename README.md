@@ -32,7 +32,8 @@ python -m pip install dist/pyresidfp-*.whl
 ## Example
 
 For the example, [NumPy](http://www.numpy.org/) and [soundcard](https://github.com/bastibe/SoundCard) python packages
-are required. The example is ported from the section *Sample Sound Program*, Commodore 64 User's Guide, page 80:
+are required. The example is ported from the section *Sample Sound Program*,
+[Commodore 64 User's Guide](https://archive.org/embed/Commodore_64_Users_Guide_1982_Commodore), page 80:
 ```python
 from datetime import timedelta
 import numpy as np
