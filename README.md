@@ -1,7 +1,7 @@
 # pyresidfp
 
 Emulates the SID sound-chip in software. The C++ emulation code was copied over from
-[libsidplayfp](https://sourceforge.net/projects/sidplay-residfp/).
+[libsidplayfp](https://github.com/libsidplayfp/libsidplayfp).
 
 ## How to install
 
