@@ -16,22 +16,15 @@
 #  along with this program; if not, write to the Free Software
 #  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
-from __future__ import print_function
+import pybind11
 
-import sys
+from skbuild import setup
 
-try:
-    from skbuild import setup
-except ImportError:
-    print(
-        "Please update pip, you need pip 10 or greater,\n"
-        " or you need to install the PEP 518 requirements in pyproject.toml yourself",
-        file=sys.stderr,
-    )
-    raise
 
 with open('README.md', 'r') as fh:
     long_description = fh.read()
+
+pybind_dir = pybind11.get_cmake_dir()
 
 setup(
     name='pyresidfp',
@@ -43,11 +36,11 @@ setup(
     url='https://github.com/pyresidfp/pyresidfp',
     classifiers=[
         'Programming Language :: Python :: 3',
-        'Programming Language :: Python :: 3.6',
         'Programming Language :: Python :: 3.7',
         'Programming Language :: Python :: 3.8',
         'Programming Language :: Python :: 3.9',
         'Programming Language :: Python :: 3.10',
+        'Programming Language :: Python :: 3.11',
         'Programming Language :: Python :: 3 :: Only',
         'Programming Language :: C++',
         'License :: OSI Approved :: GNU General Public License v2 or later (GPLv2+)',
@@ -57,9 +50,9 @@ setup(
         'Intended Audience :: Developers',
         'Development Status :: 2 - Pre-Alpha'
     ],
-    # add extension module
     packages=["pyresidfp"],
     package_dir={"": "src"},
     cmake_install_dir="src/pyresidfp",
-    python_requires='>=3.6',
+    cmake_args=['-DCMAKE_PREFIX_PATH=' + pybind_dir] if pybind_dir else None,
+    python_requires='>=3.7.0,<4.0.0',
 )

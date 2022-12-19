@@ -1,7 +1,7 @@
 /*
  * This file is part of libsidplayfp, a SID player engine.
  *
- * Copyright 2011-2016 Leandro Nini <drfiemost@users.sourceforge.net>
+ * Copyright 2011-2022 Leandro Nini <drfiemost@users.sourceforge.net>
  * Copyright 2007-2010 Antti Lankila
  * Copyright 2004,2010 Dag Lem <resid@nimrod.no>
  *
@@ -139,9 +139,6 @@ private:
 
     bool is6581; //-V730_NOINIT this is initialized in the SID constructor
 
-    /// The DAC LUT for analog output
-    float* dac; //-V730_NOINIT this is initialized in the SID constructor
-
 private:
     void clock_shift_register(unsigned int bit0);
 
@@ -159,15 +156,6 @@ private:
 
 public:
     void setWaveformModels(matrix_t* models);
-
-    /**
-     * Set the analog DAC emulation:
-     * 8580 is perfectly linear while 6581 is nonlinear.
-     * Must be called before any operation.
-     *
-     * @param dac
-     */
-    void setDAC(float* dac) { this->dac = dac; }
 
     /**
      * Set the chip model.
@@ -260,12 +248,12 @@ public:
     void reset();
 
     /**
-     * 12-bit waveform output as an analogue float value.
+     * 12-bit waveform output.
      *
      * @param ringModulator The oscillator ring-modulating current one.
-     * @return output the waveform generator output
+     * @return the waveform generator digital output
      */
-    float output(const WaveformGenerator* ringModulator);
+    unsigned int output(const WaveformGenerator* ringModulator);
 
     /**
      * Read OSC3 value.
@@ -322,7 +310,7 @@ void WaveformGenerator::clock()
         const unsigned int accumulator_old = accumulator;
         accumulator = (accumulator + freq) & 0xffffff;
 
-        // Check which bit have changed
+        // Check which bit have changed from low to high
         const unsigned int accumulator_bits_set = ~accumulator_old & accumulator;
 
         // Check whether the MSB is set high. This is used for synchronization.
@@ -344,7 +332,7 @@ void WaveformGenerator::clock()
 }
 
 RESID_INLINE
-float WaveformGenerator::output(const WaveformGenerator* ringModulator)
+unsigned int WaveformGenerator::output(const WaveformGenerator* ringModulator)
 {
     // Set output value.
     if (likely(waveform != 0))
@@ -369,9 +357,10 @@ float WaveformGenerator::output(const WaveformGenerator* ringModulator)
 
         // In the 6581 the top bit of the accumulator may be driven low by combined waveforms
         // when the sawtooth is selected
-        // FIXME doesn't seem to always happen
-        if ((waveform & 2) && unlikely(waveform & 0xd) && is6581)
-            accumulator &= (waveform_output << 12) | 0x7fffff;
+        if (is6581
+                && (waveform & 0x2)
+                && ((waveform_output & 0x800) == 0))
+            accumulator &= 0x7fffff;
 
         write_shift_register();
     }
@@ -398,9 +387,7 @@ float WaveformGenerator::output(const WaveformGenerator* ringModulator)
     // Push next pulse level into pulse level pipeline.
     pulse_output = ((accumulator >> 12) >= pw) ? 0xfff : 0x000;
 
-    // DAC imperfections are emulated by using waveform_output as an index
-    // into a DAC lookup table. readOSC() uses waveform_output directly.
-    return dac[waveform_output];
+    return waveform_output;
 }
 
 } // namespace reSIDfp

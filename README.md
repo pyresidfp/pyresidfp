@@ -20,13 +20,9 @@ python -m pip install pyresidfp
 
 ### From cloned git repository 
 
-Build from source using
+Build from source and install using
 ```commandline
-python -m build
-```
-and install using
-```commandline
-python -m pip install dist/pyresidfp-*.whl
+python -m pip install .
 ```
 
 ## Example
@@ -64,9 +60,9 @@ spkr.play(data=samples, samplerate=int(sid.sampling_frequency), channels=1)
 ```
 
 
-## Thanks
+## Credits
 
-I like to thank all contributors of `libsidplayfp`, especially:
+We like to thank all contributors of `libsidplayfp`, especially:
 
 - Dag Lem: Designed and programmed complete emulation engine.
 - Antti S. Lankila: Distortion simulation and calculation of combined waveforms
