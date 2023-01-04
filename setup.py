@@ -55,4 +55,8 @@ setup(
     cmake_install_dir="src/pyresidfp",
     cmake_args=['-DCMAKE_PREFIX_PATH=' + pybind_dir] if pybind_dir else None,
     python_requires='>=3.7.0,<4.0.0',
+    setup_requires=[
+        'cmake',
+        'ninja',
+    ],
 )
