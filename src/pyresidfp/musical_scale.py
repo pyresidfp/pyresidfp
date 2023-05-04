@@ -1,6 +1,6 @@
 #  This file is part of pyresidfp, a SID emulation package for Python.
 #
-#  Copyright (c) 2018-2022.  Sebastian Klemke <packet@nerdheim.de>
+#  Copyright (c) 2018-2023.  Sebastian Klemke <pypi@nerdheim.de>
 #
 #  This program is free software; you can redistribute it and/or modify
 #  it under the terms of the GNU General Public License as published by
