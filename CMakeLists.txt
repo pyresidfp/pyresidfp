@@ -1,10 +1,15 @@
-cmake_minimum_required(VERSION 3.25...3.25)
-project(${SKBUILD_PROJECT_NAME} VERSION ${SKBUILD_PROJECT_VERSION})
+cmake_minimum_required(VERSION 3.15...3.26)
 
+string(REGEX REPLACE "^([0-9]+\.[0-9]+\.[0-9]+)(\.[^.]*)*$" "\\1" TRUNCATED_PROJECT_VERSION ${SKBUILD_PROJECT_VERSION})
+
+project(${SKBUILD_PROJECT_NAME} VERSION ${TRUNCATED_PROJECT_VERSION} LANGUAGES CXX)
+
+set(PYBIND11_NEWPYTHON ON)
 find_package(pybind11 CONFIG REQUIRED)
 
 include(CheckCXXSourceCompiles)
 include(CheckIncludeFileCXX)
+include(CheckIPOSupported)
 
 enable_testing()
 
@@ -27,6 +32,8 @@ endif()
 check_cxx_source_compiles("
 int main(void) { if (__builtin_expect(0, 0)) return 1; return 0; }
 " HAVE_BUILTIN_EXPECT)
+
+check_ipo_supported(RESULT IPO_SUPPORTED OUTPUT IPO_ERROR)
 
 set(CMAKE_CXX_STANDARD 14)
 set(CMAKE_CXX_EXTENSIONS OFF)
@@ -98,5 +105,12 @@ target_include_directories(_pyresidfp
 target_compile_definitions(_pyresidfp PRIVATE HAVE_CONFIG_H)
 target_compile_definitions(_pyresidfp PRIVATE PROJECT_VERSION)
 set_property(TARGET _pyresidfp PROPERTY CXX_STANDARD 14)
+
+if (IPO_SUPPORTED)
+  message(STATUS "IPO / LTO enabled")
+  set_property(TARGET _pyresidfp PROPERTY INTERPROCEDURAL_OPTIMIZATION TRUE)
+else()
+  message(STATUS "IPO / LTO not supported: <${IPO_ERROR}>")
+endif()
 
 install(TARGETS _pyresidfp DESTINATION .)
