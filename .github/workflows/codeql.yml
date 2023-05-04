@@ -56,7 +56,11 @@ jobs:
         # queries: security-extended,security-and-quality
 
 
-    - run: pipx run build
+    - run: pipx run build -w
+      env:
+        SKBUILD_CMAKE_VERSBOSE: "true"
+        SKBUILD_LOGGING_LEVEL: "INFO"
+        VERBOSE: "true"
 
     - name: Perform CodeQL Analysis
       uses: github/codeql-action/analyze@v2
