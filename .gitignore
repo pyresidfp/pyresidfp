@@ -1,9 +1,6 @@
 /.idea/
-/build/
-/_skbuild/
+/src/pyresidfp/_version.py
 /dist/
-/MANIFEST
 /.venv/
-__pycache__
-*.egg-info/
-wheelhouse/
+/wheelhouse/
+*.whl
