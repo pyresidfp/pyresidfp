@@ -33,8 +33,6 @@ jobs:
           CIBW_SKIP: "*-win32 *-manylinux_i686 *-musllinux_i686"
           CIBW_ARCHS_MACOS: x86_64 universal2
           CIBW_ARCHS_LINUX: auto aarch64
-          SKBUILD_CMAKE_VERBOSE: "true"
-          SKBUILD_LOGGING_LEVEL: "INFO"
 
       - uses: actions/upload-artifact@v3
         with:
