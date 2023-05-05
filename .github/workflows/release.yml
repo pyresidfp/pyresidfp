@@ -51,9 +51,15 @@ jobs:
         with:
           path: dist/*.tar.gz
 
-  upload_pypi:
+  upload_testpypi:
+    if: github.event_name == 'push' && startsWith(github.ref, 'refs/tags')
     needs: [build_wheels, build_sdist]
     runs-on: ubuntu-latest
+    environment:
+      name: testpypi
+      url: https://test.pypi.org/p/pyresidfp
+    permissions:
+      id-token: write
     steps:
       - uses: actions/setup-python@v4
         with:
@@ -65,14 +71,29 @@ jobs:
           path: dist
 
       - name: Publish distribution 📦 to Test PyPI
-        uses: pypa/gh-action-pypi-publish@release/v1.8.6
+        uses: pypa/gh-action-pypi-publish@v1.8.6
         with:
-          password: ${{ secrets.TEST_PYPI_API_TOKEN }}
           repository-url: https://test.pypi.org/legacy/
 
-      - name: Publish distribution 📦 to PyPI
-        if: startsWith(github.ref, 'refs/tags')
-        uses: pypa/gh-action-pypi-publish@release/v1.8.6
+  upload_pypi:
+    if: github.event_name == 'push' && startsWith(github.ref, 'refs/tags')
+    needs: [build_wheels, build_sdist, upload_testpypi]
+    runs-on: ubuntu-latest
+    environment:
+      name: pypi
+      url: https://pypi.org/p/pyresidfp
+    permissions:
+      id-token: write
+    steps:
+      - uses: actions/setup-python@v4
         with:
-          password: ${{ secrets.PYPI_API_TOKEN }}
+          python-version: "3.x"
+
+      - uses: actions/download-artifact@v3
+        with:
+          name: artifact
+          path: dist
+
+      - name: Publish distribution 📦 to PyPI
+        uses: pypa/gh-action-pypi-publish@v1.8.6
 
