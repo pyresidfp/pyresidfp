@@ -18,8 +18,8 @@
 
 import datetime
 import logging
+import typing as t
 from enum import Enum
-from typing import Any, Callable, Dict, Tuple
 
 from _pyresidfp import ChipModel, SID, SamplingMethod
 
@@ -59,7 +59,7 @@ class _VoiceRegister(Enum):
 
 
 class _Metaclass(type):
-    def __init__(cls, name: str, bases: Tuple[type, ...], attrs: Dict[str, Any]) -> None:
+    def __init__(cls, name: str, bases: t.Tuple[type, ...], attrs: t.Dict[str, t.Any]) -> None:
         super(_Metaclass, cls).__init__(name, bases, attrs)
 
         for register in WritableRegister:
@@ -73,34 +73,35 @@ class _Metaclass(type):
                     property(fget=getter, doc="int: Readable {0:s} 8-bit register".format(register.name)))
 
     @staticmethod
-    def _create_setter(register: WritableRegister) -> Callable[[Any, int], None]:
+    def _create_setter(register: WritableRegister) -> t.Callable[[t.Any, int], None]:
         def setter(self, value: int) -> None:
             self.write_register(register, value)
 
         return setter
 
     @staticmethod
-    def _create_getter(register: ReadableRegister) -> Callable[[Any], int]:
+    def _create_getter(register: ReadableRegister) -> t.Callable[[t.Any], int]:
         def getter(self) -> int:
             return self.read_register(register)
 
         return getter
 
+
 class SoundInterfaceDevice(metaclass=_Metaclass):
     """Emulation for MOS 6581 / MOS 8580 chips."""
 
-    PAL_CLOCK_FREQUENCY = 985248.0
-    NTSC_CLOCK_FREQUENCY = 1022730.0
-    DEFAULT_CLOCK_FREQUENCY = PAL_CLOCK_FREQUENCY
-    DEFAULT_SAMPLING_RATE = 48000.0
-    DEFAULT_SAMPLING_METHOD = SamplingMethod.RESAMPLE
-    DEFAULT_CHIP_MODEL = ChipModel.MOS6581
+    PAL_CLOCK_FREQUENCY: float = 985248.0
+    NTSC_CLOCK_FREQUENCY: float = 1022730.0
+    DEFAULT_CLOCK_FREQUENCY: float = PAL_CLOCK_FREQUENCY
+    DEFAULT_SAMPLING_RATE: float = 48000.0
+    DEFAULT_SAMPLING_METHOD: SamplingMethod = SamplingMethod.RESAMPLE
+    DEFAULT_CHIP_MODEL: ChipModel = ChipModel.MOS6581
 
     def __init__(self,
-                 model: ChipModel = None,
-                 sampling_method: SamplingMethod = None,
-                 clock_frequency: int = None,
-                 sampling_frequency: int = None) -> None:
+                 model: t.Optional[ChipModel] = None,
+                 sampling_method: t.Optional[SamplingMethod] = None,
+                 clock_frequency: t.Optional[int] = None,
+                 sampling_frequency: t.Optional[int] = None) -> None:
         """Creates a new instance."""
         self._log = logging.getLogger(__name__)
         chip_model = model or type(self).DEFAULT_CHIP_MODEL
@@ -250,7 +251,8 @@ class SoundInterfaceDevice(metaclass=_Metaclass):
         num_cycles = int(duration.total_seconds() * self.clock_frequency)
         num_samples = int(duration.total_seconds() * self.sampling_frequency)
 
-        self._log.debug("Clock for %f cycles (%f samples estimated) for an interval of %s", num_cycles, num_samples, duration)
+        self._log.debug("Clock for %f cycles (%f samples estimated) for an interval of %s",
+                        num_cycles, num_samples, duration)
 
         # native sample format is signed 16-bit integers in host endianness
         result = self._sid.clock(num_cycles)

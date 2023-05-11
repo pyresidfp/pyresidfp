@@ -20,3 +20,9 @@ from .musical_scale import Tone
 from .registers import AttackDecayBits, ControlBits, ModeVolBits, ReadableRegister, ResFiltBits, SustainReleaseBits, \
     WritableRegister
 from .sound_interface_device import SoundInterfaceDevice, Voice, _VoiceRegister
+from ._version import version, version_tuple, __version__, __version_tuple__
+
+__all__ = [
+    "Tone", "AttackDecayBits", "ControlBits", "ModeVolBits", "ReadableRegister", "ResFiltBits", "SustainReleaseBits",
+    "WritableRegister", "SoundInterfaceDevice", "Voice",
+]
