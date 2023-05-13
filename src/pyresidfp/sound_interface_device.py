@@ -21,8 +21,7 @@ import logging
 import typing as t
 from enum import Enum
 
-from _pyresidfp import ChipModel, SID, SamplingMethod
-
+from ._pyresidfp import ChipModel, SID, SamplingMethod
 from .musical_scale import Tone
 from .registers import ReadableRegister, WritableRegister
 
