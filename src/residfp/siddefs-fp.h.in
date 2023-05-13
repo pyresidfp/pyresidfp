@@ -57,6 +57,6 @@ const char* residfp_version_string = "@PACKAGE_VERSION@";
 
 // Inlining on/off.
 #cmakedefine01 RESID_INLINING
-#define RESID_INLINE @RESID_INLINE@
+#cmakedefine RESID_INLINE @RESID_INLINE@
 
 #endif // SIDDEFS_FP_H
