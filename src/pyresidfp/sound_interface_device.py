@@ -28,6 +28,7 @@ from .registers import ReadableRegister, WritableRegister
 
 class Voice(Enum):
     """The three voices of an emulated MOS 6581 / MOS 8580"""
+
     ONE = 0
     TWO = 1
     THREE = 2
@@ -58,18 +59,37 @@ class _VoiceRegister(Enum):
 
 
 class _Metaclass(type):
-    def __init__(cls, name: str, bases: t.Tuple[type, ...], attrs: t.Dict[str, t.Any]) -> None:
+    def __init__(
+        cls, name: str, bases: t.Tuple[type, ...], attrs: t.Dict[str, t.Any]
+    ) -> None:
         super(_Metaclass, cls).__init__(name, bases, attrs)
 
-        for register in WritableRegister:
-            setter = type(cls)._create_setter(register)
-            setattr(cls, register.name,
-                    property(fget=None, fset=setter, doc="int: Writable {0:s} 8-bit register".format(register.name)))
+        for writable_register in WritableRegister:
+            setter = type(cls)._create_setter(writable_register)
+            setattr(
+                cls,
+                writable_register.name,
+                property(
+                    fget=None,
+                    fset=setter,
+                    doc="int: Writable {0:s} 8-bit register".format(
+                        writable_register.name
+                    ),
+                ),
+            )
 
-        for register in ReadableRegister:
-            getter = type(cls)._create_getter(register)
-            setattr(cls, register.name,
-                    property(fget=getter, doc="int: Readable {0:s} 8-bit register".format(register.name)))
+        for readable_register in ReadableRegister:
+            getter = type(cls)._create_getter(readable_register)
+            setattr(
+                cls,
+                readable_register.name,
+                property(
+                    fget=getter,
+                    doc="int: Readable {0:s} 8-bit register".format(
+                        readable_register.name
+                    ),
+                ),
+            )
 
     @staticmethod
     def _create_setter(register: WritableRegister) -> t.Callable[[t.Any, int], None]:
@@ -96,11 +116,13 @@ class SoundInterfaceDevice(metaclass=_Metaclass):
     DEFAULT_SAMPLING_METHOD: SamplingMethod = SamplingMethod.RESAMPLE
     DEFAULT_CHIP_MODEL: ChipModel = ChipModel.MOS6581
 
-    def __init__(self,
-                 model: t.Optional[ChipModel] = None,
-                 sampling_method: t.Optional[SamplingMethod] = None,
-                 clock_frequency: t.Optional[int] = None,
-                 sampling_frequency: t.Optional[int] = None) -> None:
+    def __init__(
+        self,
+        model: t.Optional[ChipModel] = None,
+        sampling_method: t.Optional[SamplingMethod] = None,
+        clock_frequency: t.Optional[float] = None,
+        sampling_frequency: t.Optional[float] = None,
+    ) -> None:
         """Creates a new instance."""
         self._log = logging.getLogger(__name__)
         chip_model = model or type(self).DEFAULT_CHIP_MODEL
@@ -109,7 +131,9 @@ class SoundInterfaceDevice(metaclass=_Metaclass):
         sampling_frequency = sampling_frequency or type(self).DEFAULT_SAMPLING_RATE
         assert 0 < sampling_frequency <= clock_frequency
         assert 125.0 * clock_frequency / sampling_frequency < 16384.0
-        self._sid = SID(chip_model, sampling_method, clock_frequency, sampling_frequency)
+        self._sid = SID(
+            chip_model, sampling_method, clock_frequency, sampling_frequency
+        )
 
     @property
     def chip_model(self) -> ChipModel:
@@ -250,8 +274,12 @@ class SoundInterfaceDevice(metaclass=_Metaclass):
         num_cycles = int(duration.total_seconds() * self.clock_frequency)
         num_samples = int(duration.total_seconds() * self.sampling_frequency)
 
-        self._log.debug("Clock for %f cycles (%f samples estimated) for an interval of %s",
-                        num_cycles, num_samples, duration)
+        self._log.debug(
+            "Clock for %f cycles (%f samples estimated) for an interval of %s",
+            num_cycles,
+            num_samples,
+            duration,
+        )
 
         # native sample format is signed 16-bit integers in host endianness
         result = self._sid.clock(num_cycles)
@@ -292,14 +320,16 @@ class SoundInterfaceDevice(metaclass=_Metaclass):
 
         return result
 
-    def _write_voice_register(self, voice: Voice, register: _VoiceRegister, value: int) -> None:
-        register = register.voice_register(voice)
+    def _write_voice_register(
+        self, voice: Voice, register: _VoiceRegister, value: int
+    ) -> None:
+        writable_register = register.voice_register(voice)
 
-        self.write_register(register, value)
+        self.write_register(writable_register, value)
 
     @staticmethod
     def _split_filter_cutoff(filter_cutoff: int) -> tuple:
-        assert 0 <= filter_cutoff <= (2 ** 11 - 1)
+        assert 0 <= filter_cutoff <= (2**11 - 1)
 
         lo = filter_cutoff & 0x07
         hi = (filter_cutoff >> 3) & 0xFF
@@ -308,7 +338,7 @@ class SoundInterfaceDevice(metaclass=_Metaclass):
 
     @staticmethod
     def _split_pulse_width(pulse_width: int) -> tuple:
-        assert 0 <= pulse_width <= (2 ** 12 - 1)
+        assert 0 <= pulse_width <= (2**12 - 1)
 
         lo = pulse_width & 0xFF
         hi = (pulse_width >> 8) & 0x0F

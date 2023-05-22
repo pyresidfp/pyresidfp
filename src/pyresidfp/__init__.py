@@ -17,12 +17,27 @@
 #  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
 from .musical_scale import Tone
-from .registers import AttackDecayBits, ControlBits, ModeVolBits, ReadableRegister, ResFiltBits, SustainReleaseBits, \
-    WritableRegister
+from .registers import (
+    AttackDecayBits,
+    ControlBits,
+    ModeVolBits,
+    ReadableRegister,
+    ResFiltBits,
+    SustainReleaseBits,
+    WritableRegister,
+)
 from .sound_interface_device import SoundInterfaceDevice, Voice, _VoiceRegister
 from ._version import version, version_tuple, __version__, __version_tuple__
 
 __all__ = [
-    "Tone", "AttackDecayBits", "ControlBits", "ModeVolBits", "ReadableRegister", "ResFiltBits", "SustainReleaseBits",
-    "WritableRegister", "SoundInterfaceDevice", "Voice",
+    "Tone",
+    "AttackDecayBits",
+    "ControlBits",
+    "ModeVolBits",
+    "ReadableRegister",
+    "ResFiltBits",
+    "SustainReleaseBits",
+    "WritableRegister",
+    "SoundInterfaceDevice",
+    "Voice",
 ]
