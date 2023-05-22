@@ -3,4 +3,5 @@
 /dist/
 /.venv/
 /wheelhouse/
+/.mypy_cache
 *.whl
