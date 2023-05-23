@@ -61,7 +61,11 @@ class SID:
     """
 
     def __init__(
-        self, arg0: ChipModel, arg1: SamplingMethod, arg2: float, arg3: float
+        self,
+        chip_model: ChipModel,
+        method: SamplingMethod,
+        clock_frequency: float,
+        sampling_frequency: float,
     ) -> None:
         """
         Creates a new instance of SID and sets sampling parameters.
@@ -77,10 +81,10 @@ class SID:
         overfill its 16k sample ring buffer.
 
         Args:
-            chipModel (_pyresidfp.ChipModel):   Chip model to emulate
+            chip_model (_pyresidfp.ChipModel):  Chip model to emulate
             method (_pyresidfp.SamplingMethod): Sampling method to use
-            clockFrequency (float):             System clock frequency at Hz
-            samplingFrequency (float):          Desired output sampling rate
+            clock_frequency (float):            System clock frequency at Hz
+            sampling_frequency (float):         Desired output sampling rate
 
         Raises:
             RuntimeError
@@ -91,7 +95,7 @@ class SID:
 
             >>> sid = SID(ChipModel.MOS6581, SamplingMethod.RESAMPLE, 985248.0, 48000.0)
         """
-    def clock(self, arg0: int) -> typing.List[int]:
+    def clock(self, cycles: int) -> typing.List[int]:
         """
         Clock SID forward using chosen output sampling algorithm and sample.
 
@@ -106,14 +110,14 @@ class SID:
         Returns:
              :obj:`list` of :obj:`int` samples in range -32768 to 32767
         """
-    def enable_filter(self, arg0: bool) -> None:
+    def enable_filter(self, enable: bool) -> None:
         """
         Enable filter emulation.
 
         Args:
             enable (bool): False to turn off filter emulation
         """
-    def input(self, arg0: int) -> None:
+    def input(self, value: int) -> None:
         """
         16-bit input (EXT IN). Write 16-bit sample to audio input. NB! The caller
         is responsible for keeping the value within 16 bits. Note that to mix in
@@ -123,7 +127,7 @@ class SID:
         Args:
             value (int): Input level to set
         """
-    def mute(self, arg0: int, arg1: bool) -> None:
+    def mute(self, channel: int, enable: bool) -> None:
         """
         SID voice muting.
 
@@ -131,7 +135,7 @@ class SID:
             channel (int): Channel to modify
             enable (bool): enable muting
         """
-    def read(self, arg0: int) -> int:
+    def read(self, offset: int) -> int:
         """
         Read registers.
 
@@ -165,21 +169,21 @@ class SID:
         Raises:
             RuntimeError
         """
-    def set_filter_6581_curve(self, arg0: float) -> None:
+    def set_filter_6581_curve(self, curve_position: float) -> None:
         """
         Set filter curve parameter for 6581 model.
 
         Args:
-            curvePosition (float): 0 .. 1, where 0 sets center frequency high ("light") and 1 sets it low ("dark"), default is 0.5
+            curve_position (float): 0 .. 1, where 0 sets center frequency high ("light") and 1 sets it low ("dark"), default is 0.5
         """
-    def set_filter_8580_curve(self, arg0: float) -> None:
+    def set_filter_8580_curve(self, curve_position: float) -> None:
         """
         Set filter curve parameter for 8580 model.
 
         Args:
-            curvePosition (float):
+            curve_position (float):
         """
-    def write(self, arg0: int, arg1: int) -> None:
+    def write(self, offset: int, value: int) -> None:
         """
         Write registers.
 

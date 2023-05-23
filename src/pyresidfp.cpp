@@ -84,7 +84,9 @@ PYBIND11_MODULE(_pyresidfp, m) {
                MOS6581/MOS8580 emulation.
             )pbdoc")
 
-            .def(py::init<sid::ChipModel, sid::SamplingMethod, double, double>(), R"pbdoc(
+            .def(py::init<sid::ChipModel, sid::SamplingMethod, double, double>(),
+                    py::arg("chip_model"), py::arg("method"), py::arg("clock_frequency"), py::arg("sampling_frequency"),
+                    R"pbdoc(
                Creates a new instance of SID and sets sampling parameters.
 
                Use a clock freqency of 985248Hz for PAL C64, 1022730Hz for NTSC C64.
@@ -98,10 +100,10 @@ PYBIND11_MODULE(_pyresidfp, m) {
                overfill its 16k sample ring buffer.
 
                Args:
-                   chipModel (_pyresidfp.ChipModel):   Chip model to emulate
+                   chip_model (_pyresidfp.ChipModel):  Chip model to emulate
                    method (_pyresidfp.SamplingMethod): Sampling method to use
-                   clockFrequency (float):             System clock frequency at Hz
-                   samplingFrequency (float):          Desired output sampling rate
+                   clock_frequency (float):            System clock frequency at Hz
+                   sampling_frequency (float):         Desired output sampling rate
 
                Raises:
                    RuntimeError
@@ -136,7 +138,7 @@ PYBIND11_MODULE(_pyresidfp, m) {
                    RuntimeError
             )pbdoc")
 
-            .def("input", &::pysid::PythonSid::input, R"pbdoc(
+            .def("input", &::pysid::PythonSid::input, py::arg("value"), R"pbdoc(
                16-bit input (EXT IN). Write 16-bit sample to audio input. NB! The caller
                is responsible for keeping the value within 16 bits. Note that to mix in
                an external audio signal, the signal should be resampled to 1MHz first to\
@@ -146,7 +148,7 @@ PYBIND11_MODULE(_pyresidfp, m) {
                    value (int): Input level to set
             )pbdoc")
 
-            .def("read", &::pysid::PythonSid::read, R"pbdoc(
+            .def("read", &::pysid::PythonSid::read, py::arg("offset"), R"pbdoc(
                Read registers.
 
                Reading a write only register returns the last char written to any SID register.
@@ -173,7 +175,7 @@ PYBIND11_MODULE(_pyresidfp, m) {
                    char: Value read from chip
             )pbdoc")
 
-            .def("write", &::pysid::PythonSid::write, R"pbdoc(
+            .def("write", &::pysid::PythonSid::write, py::arg("offset"), py::arg("value"), R"pbdoc(
                Write registers.
 
                Args:
@@ -181,7 +183,7 @@ PYBIND11_MODULE(_pyresidfp, m) {
                    value  (char): Value to write
             )pbdoc")
 
-            .def("mute", &::pysid::PythonSid::mute, R"pbdoc(
+            .def("mute", &::pysid::PythonSid::mute, py::arg("channel"), py::arg("enable"), R"pbdoc(
                SID voice muting.
 
                Args:
@@ -189,7 +191,7 @@ PYBIND11_MODULE(_pyresidfp, m) {
                    enable (bool): enable muting
             )pbdoc")
 
-            .def("clock", &::pysid::PythonSid::clock, R"pbdoc(
+            .def("clock", &::pysid::PythonSid::clock, py::arg("cycles"), R"pbdoc(
                Clock SID forward using chosen output sampling algorithm and sample.
 
                Note:
@@ -204,21 +206,21 @@ PYBIND11_MODULE(_pyresidfp, m) {
                     :obj:`list` of :obj:`int` samples in range -32768 to 32767
             )pbdoc")
 
-            .def("set_filter_6581_curve", &::pysid::PythonSid::setFilter6581Curve, R"pbdoc(
+            .def("set_filter_6581_curve", &::pysid::PythonSid::setFilter6581Curve, py::arg("curve_position"), R"pbdoc(
                Set filter curve parameter for 6581 model.
 
                Args:
-                   curvePosition (float): 0 .. 1, where 0 sets center frequency high ("light") and 1 sets it low ("dark"), default is 0.5
+                   curve_position (float): 0 .. 1, where 0 sets center frequency high ("light") and 1 sets it low ("dark"), default is 0.5
             )pbdoc")
 
-            .def("set_filter_8580_curve", &::pysid::PythonSid::setFilter8580Curve, R"pbdoc(
+            .def("set_filter_8580_curve", &::pysid::PythonSid::setFilter8580Curve, py::arg("curve_position"), R"pbdoc(
                Set filter curve parameter for 8580 model.
 
                Args:
-                   curvePosition (float):
+                   curve_position (float):
             )pbdoc")
 
-            .def("enable_filter", &::pysid::PythonSid::enableFilter, R"pbdoc(
+            .def("enable_filter", &::pysid::PythonSid::enableFilter, py::arg("enable"), R"pbdoc(
                Enable filter emulation.
 
                Args:
