@@ -22,6 +22,7 @@ python -m pip install -r "${SCRIPTDIR}/requirements-dev.txt"
 python -m pip install "${TOPDIR}" 
 
 black --check "${TOPDIR}/src/pyresidfp"
+black --check "${TOPDIR}/tests"
 
 mypy -p pyresidfp
 
