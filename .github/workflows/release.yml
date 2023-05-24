@@ -33,6 +33,7 @@ jobs:
           CIBW_ARCHS_LINUX: auto aarch64
           CIBW_TEST_REQUIRES: "pytest"
           CIBW_TEST_COMMAND: "pytest {project}/tests"
+          CIBW_TEST_SKIP: "*-macosx_universal2:arm64"
 
       - uses: actions/upload-artifact@v3
         with:
