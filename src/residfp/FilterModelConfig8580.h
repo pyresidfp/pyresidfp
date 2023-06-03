@@ -27,7 +27,7 @@
 
 #include <memory>
 
-#include "src/sidcxx14.h"
+#include "src/sidcxx11.h"
 
 namespace reSIDfp
 {

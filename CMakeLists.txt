@@ -6,6 +6,7 @@ project(${SKBUILD_PROJECT_NAME} VERSION ${TRUNCATED_PROJECT_VERSION} LANGUAGES C
 
 set(PYBIND11_NEWPYTHON ON)
 find_package(pybind11 CONFIG REQUIRED)
+find_package(OpenMP)
 
 include(CheckCXXSourceCompiles)
 include(CheckIncludeFileCXX)
@@ -35,7 +36,7 @@ int main(void) { if (__builtin_expect(0, 0)) return 1; return 0; }
 
 check_ipo_supported(RESULT IPO_SUPPORTED OUTPUT IPO_ERROR)
 
-set(CMAKE_CXX_STANDARD 14)
+set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_EXTENSIONS OFF)
 set(PACKAGE_VERSION ${PROJECT_VERSION})
 option(ENABLE_INLINING "Enable inlining" ON)
@@ -46,6 +47,7 @@ endif()
 set(RESID_BRANCH_HINTS 1)
 set(HAVE_CXX11 $<COMPILE_FEATURES:cxx_std_11>)
 set(HAVE_CXX14 $<COMPILE_FEATURES:cxx_std_14>)
+set(HAVE_CXX17 $<COMPILE_FEATURES:cxx_std_17>)
 
 configure_file(src/residfp/siddefs-fp.h.in siddefs-fp.h)
 configure_file(src/config.h.in config.h)
@@ -77,7 +79,6 @@ set(HEADER_FILES
         src/residfp/WaveformCalculator.h
         src/residfp/WaveformGenerator.h
         src/sidcxx11.h
-        src/sidcxx14.h
         src/PythonSid.h)
 set(SOURCE_FILES
         src/residfp/resample/SincResampler.cpp
@@ -108,7 +109,15 @@ target_include_directories(_pyresidfp
         src/residfp src/residfp/resample)
 target_compile_definitions(_pyresidfp PRIVATE HAVE_CONFIG_H)
 target_compile_definitions(_pyresidfp PRIVATE PROJECT_VERSION="${SKBUILD_PROJECT_VERSION}")
-set_property(TARGET _pyresidfp PROPERTY CXX_STANDARD 14)
+set_property(TARGET _pyresidfp PROPERTY CXX_STANDARD 17)
+
+if(OpenMP_CXX_FOUND)
+  message(STATUS "OpenMP found")
+  target_link_libraries(_pyresidfp PUBLIC OpenMP::OpenMP_CXX)
+else()
+  message(STATUS "OpenMP not found")
+endif()
+
 
 if (IPO_SUPPORTED)
   message(STATUS "IPO / LTO enabled")
