@@ -26,7 +26,7 @@ sdist.include = ["src/pyresidfp/_version.py", "src/pyresidfp/py.typed"]
 sdist.exclude = [".github", ".gitignore", "scripts"]
 wheel.packages = ["src/pyresidfp"]
 wheel.install-dir = "pyresidfp"
-minimum-version = "0.3"
+minimum-version = "0.5"
 
 [tool.setuptools_scm]
 write_to = "src/pyresidfp/_version.py"
@@ -45,6 +45,7 @@ classifiers = [
     "Programming Language :: Python :: 3.9",
     "Programming Language :: Python :: 3.10",
     "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
     "Programming Language :: Python :: 3 :: Only",
     "Programming Language :: C++",
     "License :: OSI Approved :: GNU General Public License v2 or later (GPLv2+)",
