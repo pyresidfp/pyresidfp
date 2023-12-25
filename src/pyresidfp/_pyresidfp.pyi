@@ -1,4 +1,5 @@
 """
+
         reSIDfp SID (MOS6581 / MOS8580) extension
         -----------------------------------------
 
@@ -8,15 +9,16 @@
            :toctree: _generate
 
            SID
-    """
+    
+"""
 from __future__ import annotations
-import pyresidfp._pyresidfp
 import typing
 
 __all__ = ["ChipModel", "SID", "SamplingMethod"]
 
 class ChipModel:
     """
+
                    Chip models to emulate.
 
 
@@ -31,33 +33,31 @@ class ChipModel:
 
     """
 
-    def __eq__(self, other: object) -> bool: ...
+    MOS6581: typing.ClassVar[ChipModel]  # value = <ChipModel.MOS6581: 1>
+    MOS8580: typing.ClassVar[ChipModel]  # value = <ChipModel.MOS8580: 2>
+    __members__: typing.ClassVar[
+        dict[str, ChipModel]
+    ]  # value = {'MOS6581': <ChipModel.MOS6581: 1>, 'MOS8580': <ChipModel.MOS8580: 2>}
+    def __eq__(self, other: typing.Any) -> bool: ...
     def __getstate__(self) -> int: ...
     def __hash__(self) -> int: ...
     def __index__(self) -> int: ...
     def __init__(self, value: int) -> None: ...
     def __int__(self) -> int: ...
-    def __ne__(self, other: object) -> bool: ...
+    def __ne__(self, other: typing.Any) -> bool: ...
     def __repr__(self) -> str: ...
     def __setstate__(self, state: int) -> None: ...
+    def __str__(self) -> str: ...
     @property
-    def name(self) -> str:
-        """
-        :type: str
-        """
+    def name(self) -> str: ...
     @property
-    def value(self) -> int:
-        """
-        :type: int
-        """
-    MOS6581: pyresidfp._pyresidfp.ChipModel  # value = <ChipModel.MOS6581: 1>
-    MOS8580: pyresidfp._pyresidfp.ChipModel  # value = <ChipModel.MOS8580: 2>
-    __members__: dict  # value = {'MOS6581': <ChipModel.MOS6581: 1>, 'MOS8580': <ChipModel.MOS8580: 2>}
-    pass
+    def value(self) -> int: ...
 
 class SID:
     """
+
     MOS6581/MOS8580 emulation.
+
     """
 
     def __init__(
@@ -95,7 +95,7 @@ class SID:
 
             >>> sid = SID(ChipModel.MOS6581, SamplingMethod.RESAMPLE, 985248.0, 48000.0)
         """
-    def clock(self, cycles: int) -> typing.List[int]:
+    def clock(self, cycles: int) -> list[int]:
         """
         Clock SID forward using chosen output sampling algorithm and sample.
 
@@ -119,13 +119,13 @@ class SID:
         """
     def input(self, value: int) -> None:
         """
-        16-bit input (EXT IN). Write 16-bit sample to audio input. NB! The caller
-        is responsible for keeping the value within 16 bits. Note that to mix in
-        an external audio signal, the signal should be resampled to 1MHz first to\
-        avoid sampling noise.
-
-        Args:
-            value (int): Input level to set
+                       16-bit input (EXT IN). Write 16-bit sample to audio input. NB! The caller
+                       is responsible for keeping the value within 16 bits. Note that to mix in
+                       an external audio signal, the signal should be resampled to 1MHz first to\
+                       avoid sampling noise.
+        
+                       Args:
+                           value (int): Input level to set
         """
     def mute(self, channel: int, enable: bool) -> None:
         """
@@ -194,59 +194,35 @@ class SID:
     @property
     def chip_model(self) -> ChipModel:
         """
-                       _pyresidfp.ChipModel: Chip model to emulate.
-
-
-        :type: ChipModel
-        """
-    @chip_model.setter
-    def chip_model(self, arg1: ChipModel) -> None:
-        """
         _pyresidfp.ChipModel: Chip model to emulate.
         """
+    @chip_model.setter
+    def chip_model(self, arg1: ChipModel) -> None: ...
     @property
     def clock_frequency(self) -> float:
         """
-                       float: Clock frequency of chip to emulate
-
-
-        :type: float
-        """
-    @clock_frequency.setter
-    def clock_frequency(self, arg1: float) -> None:
-        """
         float: Clock frequency of chip to emulate
         """
+    @clock_frequency.setter
+    def clock_frequency(self, arg1: float) -> None: ...
     @property
     def sampling_frequency(self) -> float:
         """
-                       float: Frequency at which to sample output
-
-
-        :type: float
-        """
-    @sampling_frequency.setter
-    def sampling_frequency(self, arg1: float) -> None:
-        """
         float: Frequency at which to sample output
         """
+    @sampling_frequency.setter
+    def sampling_frequency(self, arg1: float) -> None: ...
     @property
     def sampling_method(self) -> SamplingMethod:
         """
-                       _pyresidfp.SamplingMethod: Sampling method to use
-
-
-        :type: SamplingMethod
-        """
-    @sampling_method.setter
-    def sampling_method(self, arg1: SamplingMethod) -> None:
-        """
         _pyresidfp.SamplingMethod: Sampling method to use
         """
-    pass
+    @sampling_method.setter
+    def sampling_method(self, arg1: SamplingMethod) -> None: ...
 
 class SamplingMethod:
     """
+
                    Method to sample emulated anologue output.
 
 
@@ -261,28 +237,24 @@ class SamplingMethod:
 
     """
 
-    def __eq__(self, other: object) -> bool: ...
+    DECIMATE: typing.ClassVar[SamplingMethod]  # value = <SamplingMethod.DECIMATE: 1>
+    RESAMPLE: typing.ClassVar[SamplingMethod]  # value = <SamplingMethod.RESAMPLE: 2>
+    __members__: typing.ClassVar[
+        dict[str, SamplingMethod]
+    ]  # value = {'DECIMATE': <SamplingMethod.DECIMATE: 1>, 'RESAMPLE': <SamplingMethod.RESAMPLE: 2>}
+    def __eq__(self, other: typing.Any) -> bool: ...
     def __getstate__(self) -> int: ...
     def __hash__(self) -> int: ...
     def __index__(self) -> int: ...
     def __init__(self, value: int) -> None: ...
     def __int__(self) -> int: ...
-    def __ne__(self, other: object) -> bool: ...
+    def __ne__(self, other: typing.Any) -> bool: ...
     def __repr__(self) -> str: ...
     def __setstate__(self, state: int) -> None: ...
+    def __str__(self) -> str: ...
     @property
-    def name(self) -> str:
-        """
-        :type: str
-        """
+    def name(self) -> str: ...
     @property
-    def value(self) -> int:
-        """
-        :type: int
-        """
-    DECIMATE: pyresidfp._pyresidfp.SamplingMethod  # value = <SamplingMethod.DECIMATE: 1>
-    RESAMPLE: pyresidfp._pyresidfp.SamplingMethod  # value = <SamplingMethod.RESAMPLE: 2>
-    __members__: dict  # value = {'DECIMATE': <SamplingMethod.DECIMATE: 1>, 'RESAMPLE': <SamplingMethod.RESAMPLE: 2>}
-    pass
+    def value(self) -> int: ...
 
-__version__ = 1
+__version__: str = "0.7.2.dev7+g3aefa4e.d20231225"

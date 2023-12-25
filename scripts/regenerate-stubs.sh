@@ -21,7 +21,7 @@ python -m pip install -r "${SCRIPTDIR}/requirements-dev.txt"
 
 python -m pip install "${TOPDIR}" 
 
-pybind11-stubgen -o "${TOPDIR}/src" --no-setup-py --root-module-suffix "" pyresidfp._pyresidfp
+pybind11-stubgen -o "${TOPDIR}/src" --root-suffix "" pyresidfp._pyresidfp
 
 black "${TOPDIR}/src/pyresidfp"
 
