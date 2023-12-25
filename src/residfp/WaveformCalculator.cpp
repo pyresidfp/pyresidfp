@@ -23,6 +23,8 @@
 
 #include <cmath>
 
+#include "src/sidcxx11.h"
+
 namespace reSIDfp
 {
 
