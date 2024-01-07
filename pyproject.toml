@@ -40,7 +40,6 @@ description = "Emulates the SID sound-chip"
 readme = "README.md"
 classifiers = [
     "Programming Language :: Python :: 3",
-    "Programming Language :: Python :: 3.7",
     "Programming Language :: Python :: 3.8",
     "Programming Language :: Python :: 3.9",
     "Programming Language :: Python :: 3.10",
@@ -55,7 +54,7 @@ classifiers = [
     "Intended Audience :: Developers",
     "Development Status :: 2 - Pre-Alpha",
 ]
-requires-python = ">=3.7.0,<4.0.0"
+requires-python = ">=3.8.0,<4.0.0"
 dynamic = ["version"]
 
 [project.urls]
