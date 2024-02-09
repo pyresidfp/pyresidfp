@@ -11,6 +11,7 @@
            SID
     
 """
+
 from __future__ import annotations
 import typing
 
@@ -95,6 +96,7 @@ class SID:
 
             >>> sid = SID(ChipModel.MOS6581, SamplingMethod.RESAMPLE, 985248.0, 48000.0)
         """
+
     def clock(self, cycles: int) -> list[int]:
         """
         Clock SID forward using chosen output sampling algorithm and sample.
@@ -110,6 +112,7 @@ class SID:
         Returns:
              :obj:`list` of :obj:`int` samples in range -32768 to 32767
         """
+
     def enable_filter(self, enable: bool) -> None:
         """
         Enable filter emulation.
@@ -117,6 +120,7 @@ class SID:
         Args:
             enable (bool): False to turn off filter emulation
         """
+
     def input(self, value: int) -> None:
         """
                        16-bit input (EXT IN). Write 16-bit sample to audio input. NB! The caller
@@ -127,6 +131,7 @@ class SID:
                        Args:
                            value (int): Input level to set
         """
+
     def mute(self, channel: int, enable: bool) -> None:
         """
         SID voice muting.
@@ -135,6 +140,7 @@ class SID:
             channel (int): Channel to modify
             enable (bool): enable muting
         """
+
     def read(self, offset: int) -> int:
         """
         Read registers.
@@ -162,6 +168,7 @@ class SID:
         Returns:
             char: Value read from chip
         """
+
     def reset(self) -> None:
         """
         Resets chip model, voice registers, filters and sampling method.
@@ -169,6 +176,7 @@ class SID:
         Raises:
             RuntimeError
         """
+
     def set_filter_6581_curve(self, curve_position: float) -> None:
         """
         Set filter curve parameter for 6581 model.
@@ -176,6 +184,7 @@ class SID:
         Args:
             curve_position (float): 0 .. 1, where 0 sets center frequency high ("light") and 1 sets it low ("dark"), default is 0.5
         """
+
     def set_filter_8580_curve(self, curve_position: float) -> None:
         """
         Set filter curve parameter for 8580 model.
@@ -183,6 +192,7 @@ class SID:
         Args:
             curve_position (float):
         """
+
     def write(self, offset: int, value: int) -> None:
         """
         Write registers.
@@ -191,11 +201,13 @@ class SID:
             offset (int): Chip register to write to
             value  (char): Value to write
         """
+
     @property
     def chip_model(self) -> ChipModel:
         """
         _pyresidfp.ChipModel: Chip model to emulate.
         """
+
     @chip_model.setter
     def chip_model(self, arg1: ChipModel) -> None: ...
     @property
@@ -203,6 +215,7 @@ class SID:
         """
         float: Clock frequency of chip to emulate
         """
+
     @clock_frequency.setter
     def clock_frequency(self, arg1: float) -> None: ...
     @property
@@ -210,6 +223,7 @@ class SID:
         """
         float: Frequency at which to sample output
         """
+
     @sampling_frequency.setter
     def sampling_frequency(self, arg1: float) -> None: ...
     @property
@@ -217,6 +231,7 @@ class SID:
         """
         _pyresidfp.SamplingMethod: Sampling method to use
         """
+
     @sampling_method.setter
     def sampling_method(self, arg1: SamplingMethod) -> None: ...
 
@@ -257,4 +272,4 @@ class SamplingMethod:
     @property
     def value(self) -> int: ...
 
-__version__: str = "0.7.2.dev7+g3aefa4e.d20231225"
+__version__: str = "0.9.1"
