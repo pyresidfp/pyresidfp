@@ -141,7 +141,7 @@ PYBIND11_MODULE(_pyresidfp, m) {
             .def("input", &::pysid::PythonSid::input, py::arg("value"), R"pbdoc(
                16-bit input (EXT IN). Write 16-bit sample to audio input. NB! The caller
                is responsible for keeping the value within 16 bits. Note that to mix in
-               an external audio signal, the signal should be resampled to 1MHz first to\
+               an external audio signal, the signal should be resampled to 1MHz first to
                avoid sampling noise.
 
                Args:
