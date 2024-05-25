@@ -69,6 +69,7 @@ set(HEADER_FILES
         src/residfp/FilterModelConfig.h
         src/residfp/FilterModelConfig6581.h
         src/residfp/FilterModelConfig8580.h
+        src/residfp/Integrator.h
         src/residfp/Integrator6581.h
         src/residfp/Integrator8580.h
         src/residfp/OpAmp.h

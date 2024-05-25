@@ -123,13 +123,13 @@ class SID:
 
     def input(self, value: int) -> None:
         """
-                       16-bit input (EXT IN). Write 16-bit sample to audio input. NB! The caller
-                       is responsible for keeping the value within 16 bits. Note that to mix in
-                       an external audio signal, the signal should be resampled to 1MHz first to\
-                       avoid sampling noise.
-        
-                       Args:
-                           value (int): Input level to set
+        16-bit input (EXT IN). Write 16-bit sample to audio input. NB! The caller
+        is responsible for keeping the value within 16 bits. Note that to mix in
+        an external audio signal, the signal should be resampled to 1MHz first to
+        avoid sampling noise.
+
+        Args:
+            value (int): Input level to set
         """
 
     def mute(self, channel: int, enable: bool) -> None:
