@@ -14,21 +14,8 @@ include(CheckIPOSupported)
 
 enable_testing()
 
-if(CMAKE_CXX_COMPILER_ID MATCHES "Clang")
-  set(USE_CLANG TRUE)
-elseif(CMAKE_CXX_COMPILER_ID MATCHES "GNU")
-  set(USE_GCC TRUE)
-endif()
-
-if(USE_GCC OR USE_CLANG)
-  check_include_file_cxx(emmintrin.h HAVE_EMMINTRIN_H)
-  check_include_file_cxx(mmintrin.h HAVE_MMINTRIN_H)
-  check_include_file_cxx(arm_neon.h HAVE_ARM_NEON_H)
-else()
-  set(HAVE_EMMINTRIN_H FALSE)
-  set(HAVE_MMINTRIN_H FALSE)
-  set(HAVE_ARM_NEON_H FALSE)
-endif()
+set(HAVE_SMMINTRIN_H FALSE)
+set(HAVE_ARM_NEON_H FALSE)
 
 check_cxx_source_compiles("
 int main(void) { if (__builtin_expect(0, 0)) return 1; return 0; }
