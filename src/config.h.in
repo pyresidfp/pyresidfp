@@ -7,6 +7,9 @@
 /* define if the compiler supports basic C++17 syntax */
 #cmakedefine HAVE_CXX17
 
+/* define if the compiler supports basic C++20 syntax */
+#cmakedefine HAVE_CXX20
+
 /* Define to 1 if you have the <arm_neon.h> header file. */
 #cmakedefine HAVE_ARM_NEON_H
 

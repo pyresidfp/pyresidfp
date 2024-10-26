@@ -5,8 +5,8 @@ string(REGEX REPLACE "^([0-9]+\.[0-9]+(\.[0-9]+)?)(\.[^.]*)*$" "\\1" TRUNCATED_P
 project(${SKBUILD_PROJECT_NAME} VERSION ${TRUNCATED_PROJECT_VERSION} LANGUAGES CXX)
 
 set(PYBIND11_NEWPYTHON ON)
+set(PYBIND11_FINDPYTHON ON)
 find_package(pybind11 CONFIG REQUIRED)
-find_package(OpenMP)
 
 include(CheckCXXSourceCompiles)
 include(CheckIncludeFileCXX)
@@ -23,7 +23,7 @@ int main(void) { if (__builtin_expect(0, 0)) return 1; return 0; }
 
 check_ipo_supported(RESULT IPO_SUPPORTED OUTPUT IPO_ERROR)
 
-set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_EXTENSIONS OFF)
 set(PACKAGE_VERSION ${PROJECT_VERSION})
 option(ENABLE_INLINING "Enable inlining" ON)
@@ -35,6 +35,7 @@ set(RESID_BRANCH_HINTS 1)
 set(HAVE_CXX11 $<COMPILE_FEATURES:cxx_std_11>)
 set(HAVE_CXX14 $<COMPILE_FEATURES:cxx_std_14>)
 set(HAVE_CXX17 $<COMPILE_FEATURES:cxx_std_17>)
+set(HAVE_CXX20 $<COMPILE_FEATURES:cxx_std_20>)
 
 configure_file(src/residfp/siddefs-fp.h.in siddefs-fp.h)
 configure_file(src/config.h.in config.h)
@@ -93,19 +94,11 @@ set(SOURCE_FILES
 pybind11_add_module(_pyresidfp MODULE
         ${HEADER_FILES} ${SOURCE_FILES})
 target_include_directories(_pyresidfp
-        PRIVATE ${CMAKE_CURRENT_BINARY_DIR} ${CMAKE_CURRENT_SOURCE_DIR}
+        PRIVATE ${CMAKE_CURRENT_BINARY_DIR} ${CMAKE_CURRENT_SOURCE_DIR} src/
         src/residfp src/residfp/resample)
 target_compile_definitions(_pyresidfp PRIVATE HAVE_CONFIG_H)
 target_compile_definitions(_pyresidfp PRIVATE PROJECT_VERSION="${SKBUILD_PROJECT_VERSION}")
-set_property(TARGET _pyresidfp PROPERTY CXX_STANDARD 17)
-
-if(OpenMP_CXX_FOUND)
-  message(STATUS "OpenMP found")
-  target_link_libraries(_pyresidfp PUBLIC OpenMP::OpenMP_CXX)
-else()
-  message(STATUS "OpenMP not found")
-endif()
-
+set_property(TARGET _pyresidfp PROPERTY CXX_STANDARD 20)
 
 if (IPO_SUPPORTED)
   message(STATUS "IPO / LTO enabled")

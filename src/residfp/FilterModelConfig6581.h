@@ -29,7 +29,7 @@
 
 #include "Dac.h"
 
-#include "src/sidcxx11.h"
+#include "sidcxx11.h"
 
 namespace reSIDfp
 {
@@ -91,12 +91,7 @@ public:
      */
     unsigned short* getDAC(double adjustment) const;
 
-    /**
-     * Construct an integrator solver.
-     *
-     * @return the integrator
-     */
-    Integrator* buildIntegrator() override;
+    inline double getWL_snake() const { return WL_snake; }
 
     inline unsigned short getVcr_nVg(int i) const { return vcr_nVg[i]; }
     inline unsigned short getVcr_n_Ids_term(int i) const

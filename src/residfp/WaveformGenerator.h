@@ -26,7 +26,7 @@
 #include "siddefs-fp.h"
 #include "array.h"
 
-#include "src/sidcxx11.h"
+#include "sidcxx11.h"
 
 // print SR debugging info
 //#define TRACE 1

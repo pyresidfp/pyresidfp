@@ -23,7 +23,7 @@ build-backend = "scikit_build_core.build"
 [tool.scikit-build]
 metadata.version.provider = "scikit_build_core.metadata.setuptools_scm"
 sdist.include = ["src/pyresidfp/_version.py", "src/pyresidfp/py.typed"]
-sdist.exclude = [".github", ".gitignore", "scripts"]
+sdist.exclude = [".github", ".gitignore", "scripts", "CODEOWNERS"]
 wheel.packages = ["src/pyresidfp"]
 wheel.install-dir = "pyresidfp"
 minimum-version = "0.5"
@@ -40,7 +40,6 @@ description = "Emulates the SID sound-chip"
 readme = "README.md"
 classifiers = [
     "Programming Language :: Python :: 3",
-    "Programming Language :: Python :: 3.8",
     "Programming Language :: Python :: 3.9",
     "Programming Language :: Python :: 3.10",
     "Programming Language :: Python :: 3.11",
@@ -55,7 +54,7 @@ classifiers = [
     "Intended Audience :: Developers",
     "Development Status :: 2 - Pre-Alpha",
 ]
-requires-python = ">=3.8.0,<4.0.0"
+requires-python = ">=3.9.0,<4.0.0"
 dynamic = ["version"]
 
 [project.urls]

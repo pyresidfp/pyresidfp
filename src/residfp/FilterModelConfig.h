@@ -29,12 +29,10 @@
 #include "OpAmp.h"
 #include "Spline.h"
 
-#include "src/sidcxx11.h"
+#include "sidcxx11.h"
 
 namespace reSIDfp
 {
-
-class Integrator;
 
 class FilterModelConfig
 {
@@ -227,8 +225,6 @@ public:
     unsigned short** getResonance() { return resonance; }
     unsigned short** getSummer() { return summer; }
     unsigned short** getMixer() { return mixer; }
-
-    virtual Integrator* buildIntegrator() = 0;
 
     inline unsigned short getOpampRev(int i) const { return opamp_rev[i]; }
     inline double getVddt() const { return Vddt; }

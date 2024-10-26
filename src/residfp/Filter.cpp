@@ -91,22 +91,14 @@ void Filter::writeMODE_VOL(unsigned char mode_vol)
     updateMixing();
 }
 
-Filter::Filter(FilterModelConfig* fmc) :
-    fmc(fmc),
-    mixer(fmc->getMixer()),
-    summer(fmc->getSummer()),
-    resonance(fmc->getResonance()),
-    volume(fmc->getVolume()),
-    hpIntegrator(fmc->buildIntegrator()),
-    bpIntegrator(fmc->buildIntegrator())
+Filter::Filter(FilterModelConfig& fmc) :
+    mixer(fmc.getMixer()),
+    summer(fmc.getSummer()),
+    resonance(fmc.getResonance()),
+    volume(fmc.getVolume()),
+    fmc(fmc)
 {
     input(0);
-}
-
-Filter::~Filter()
-{
-    delete hpIntegrator;
-    delete bpIntegrator;
 }
 
 void Filter::enable(bool enable)

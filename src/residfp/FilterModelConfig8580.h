@@ -27,7 +27,7 @@
 
 #include <memory>
 
-#include "src/sidcxx11.h"
+#include "sidcxx11.h"
 
 namespace reSIDfp
 {
@@ -50,13 +50,6 @@ private:
 
 public:
     static FilterModelConfig8580* getInstance();
-
-    /**
-     * Construct an integrator solver.
-     *
-     * @return the integrator
-     */
-    Integrator* buildIntegrator() override;
 };
 
 } // namespace reSIDfp
