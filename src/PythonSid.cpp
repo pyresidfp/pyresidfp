@@ -30,7 +30,8 @@ namespace pyreSIDfp {
             chipModel(model),
             samplingMethod(method),
             clockFrequency(clockFrequency),
-            samplingFrequency(samplingFrequency) {
+            samplingFrequency(samplingFrequency),
+            isMuted() {
         if (clockFrequency < samplingFrequency) {
             throw sid::SIDError("Clock frequency below sampling frequency");
         }
@@ -38,11 +39,9 @@ namespace pyreSIDfp {
     }
 
     void PythonSid::reset() {
-        double highestAccurateFrequency = std::min(0.9 * samplingFrequency / 2.0, 20000.0);
         delegate->reset();
         delegate->setChipModel(chipModel);
-        delegate->setSamplingParameters(clockFrequency, samplingMethod, samplingFrequency,
-                                        highestAccurateFrequency);
+        delegate->setSamplingParameters(clockFrequency, samplingMethod, samplingFrequency);
     }
 
     sid::ChipModel PythonSid::getChipModel() const {
@@ -95,12 +94,29 @@ namespace pyreSIDfp {
         return this->delegate->read(offset);
     }
 
-    void PythonSid::write(const int offset, const unsigned char value) {
+    void PythonSid::write(const int offset, unsigned char value) {
+        switch (offset) {
+            case 0x04:
+                if (this->isMuted[0]) value &= 0x0f;
+                break;
+            case 0x0b:
+                if (this->isMuted[1]) value &= 0x0f;
+                break;
+            case 0x12:
+                if (this->isMuted[2]) value &= 0x0f;
+                break;
+            case 0x18:
+                if (this->isMuted[3]) value |= 0x0f;
+                break;
+        }
+
         this->delegate->write(offset, value);
     }
 
     void PythonSid::mute(const int channel, const bool enable) {
-        this->delegate->mute(channel, enable);
+        if (channel < 4) {
+            this->isMuted[channel] = enable;
+        }
     }
 
     std::vector<short> PythonSid::clock(const unsigned int cycles) {

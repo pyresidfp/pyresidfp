@@ -24,6 +24,7 @@
 
 
 #include <vector>
+#include <bitset>
 
 #include "SID.h"
 
@@ -35,6 +36,7 @@ namespace pyreSIDfp {
         reSIDfp::SamplingMethod samplingMethod;
         double clockFrequency;
         double samplingFrequency;
+        std::bitset<4> isMuted;
 
     public:
         PythonSid(reSIDfp::ChipModel model, reSIDfp::SamplingMethod method,
