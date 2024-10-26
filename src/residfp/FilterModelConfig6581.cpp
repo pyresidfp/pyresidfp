@@ -25,7 +25,7 @@
 #include "Integrator6581.h"
 #include "OpAmp.h"
 
-#include "src/sidcxx11.h"
+#include "sidcxx11.h"
 
 #include <algorithm>
 #include <mutex>

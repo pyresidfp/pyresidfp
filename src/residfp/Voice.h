@@ -29,7 +29,7 @@
 #include "WaveformGenerator.h"
 #include "EnvelopeGenerator.h"
 
-#include "src/sidcxx11.h"
+#include "sidcxx11.h"
 
 namespace reSIDfp
 {

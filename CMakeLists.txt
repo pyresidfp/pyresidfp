@@ -93,7 +93,7 @@ set(SOURCE_FILES
 pybind11_add_module(_pyresidfp MODULE
         ${HEADER_FILES} ${SOURCE_FILES})
 target_include_directories(_pyresidfp
-        PRIVATE ${CMAKE_CURRENT_BINARY_DIR} ${CMAKE_CURRENT_SOURCE_DIR}
+        PRIVATE ${CMAKE_CURRENT_BINARY_DIR} ${CMAKE_CURRENT_SOURCE_DIR} src/
         src/residfp src/residfp/resample)
 target_compile_definitions(_pyresidfp PRIVATE HAVE_CONFIG_H)
 target_compile_definitions(_pyresidfp PRIVATE PROJECT_VERSION="${SKBUILD_PROJECT_VERSION}")

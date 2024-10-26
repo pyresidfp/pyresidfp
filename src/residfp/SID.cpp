@@ -26,7 +26,7 @@
 
 #include <limits>
 
-#include "src/sidcxx11.h"
+#include "sidcxx11.h"
 
 #include "array.h"
 #include "Dac.h"

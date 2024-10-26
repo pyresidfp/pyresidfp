@@ -27,7 +27,7 @@
 #include "Filter.h"
 #include "FilterModelConfig6581.h"
 
-#include "src/sidcxx11.h"
+#include "sidcxx11.h"
 
 namespace reSIDfp
 {

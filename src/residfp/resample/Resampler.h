@@ -25,7 +25,7 @@
 #include <cmath>
 #include <cassert>
 
-#include "src/sidcxx11.h"
+#include "sidcxx11.h"
 
 #include "siddefs-fp.h"
 

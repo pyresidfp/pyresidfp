@@ -23,10 +23,12 @@ build-backend = "scikit_build_core.build"
 [tool.scikit-build]
 metadata.version.provider = "scikit_build_core.metadata.setuptools_scm"
 sdist.include = ["src/pyresidfp/_version.py", "src/pyresidfp/py.typed"]
-sdist.exclude = [".github", ".gitignore", "scripts"]
+sdist.exclude = [".github", ".gitignore", "scripts", "CODEOWNERS"]
 wheel.packages = ["src/pyresidfp"]
 wheel.install-dir = "pyresidfp"
 minimum-version = "0.5"
+cmake.verbose = true
+logging.level = "INFO"
 
 [tool.setuptools_scm]
 write_to = "src/pyresidfp/_version.py"

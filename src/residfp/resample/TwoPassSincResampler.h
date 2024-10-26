@@ -29,7 +29,7 @@
 #include "Resampler.h"
 #include "SincResampler.h"
 
-#include "src/sidcxx11.h"
+#include "sidcxx11.h"
 
 namespace reSIDfp
 {
