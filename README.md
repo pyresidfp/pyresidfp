@@ -5,9 +5,9 @@ Emulates the SID sound-chip in software. The C++ emulation code was copied over 
 
 ## How to install
 
-Requirements:
-- compiler for ISO C++11
-- Python 3 and header files
+Requirements for installation from source:
+- compiler for ISO C++20
+- Python 3.9+ and header files
 
 
 ### From PyPI
