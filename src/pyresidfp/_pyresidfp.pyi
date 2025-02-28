@@ -1,15 +1,15 @@
 """
 
-        reSIDfp SID (MOS6581 / MOS8580) extension
-        -----------------------------------------
+reSIDfp SID (MOS6581 / MOS8580) extension
+-----------------------------------------
 
-        .. currentmodule:: _pyresidfp
+.. currentmodule:: _pyresidfp
 
-        .. autosummary::
-           :toctree: _generate
+.. autosummary::
+   :toctree: _generate
 
-           SID
-    
+   SID
+
 """
 
 from __future__ import annotations
