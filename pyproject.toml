@@ -17,7 +17,7 @@
 #  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
 [build-system]
-requires = ["scikit-build-core", "pybind11"]
+requires = ["scikit-build-core>=0.10", "pybind11"]
 build-backend = "scikit_build_core.build"
 
 [tool.scikit-build]
@@ -26,7 +26,9 @@ sdist.include = ["src/pyresidfp/_version.py", "src/pyresidfp/py.typed"]
 sdist.exclude = [".github", ".gitignore", "scripts", "CODEOWNERS"]
 wheel.packages = ["src/pyresidfp"]
 wheel.install-dir = "pyresidfp"
-minimum-version = "0.5"
+minimum-version = "build-system.requires"
+cmake.version = ">=3.20.0"
+ninja.version = ">=1.10.2"
 
 [tool.setuptools_scm]
 write_to = "src/pyresidfp/_version.py"

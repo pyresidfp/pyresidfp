@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.15...3.26)
+cmake_minimum_required(VERSION 3.20...3.31)
 
 string(REGEX REPLACE "^([0-9]+\.[0-9]+(\.[0-9]+)?)(\.[^.]*)*$" "\\1" TRUNCATED_PROJECT_VERSION ${SKBUILD_PROJECT_VERSION})
 
@@ -36,6 +36,7 @@ set(HAVE_CXX11 $<COMPILE_FEATURES:cxx_std_11>)
 set(HAVE_CXX14 $<COMPILE_FEATURES:cxx_std_14>)
 set(HAVE_CXX17 $<COMPILE_FEATURES:cxx_std_17>)
 set(HAVE_CXX20 $<COMPILE_FEATURES:cxx_std_20>)
+set(HAVE_CXX23 $<COMPILE_FEATURES:cxx_std_23>)
 
 configure_file(src/residfp/siddefs-fp.h.in siddefs-fp.h)
 configure_file(src/config.h.in config.h)
