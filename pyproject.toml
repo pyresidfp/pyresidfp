@@ -42,11 +42,11 @@ description = "Emulates the SID sound-chip"
 readme = "README.md"
 classifiers = [
     "Programming Language :: Python :: 3",
-    "Programming Language :: Python :: 3.9",
     "Programming Language :: Python :: 3.10",
     "Programming Language :: Python :: 3.11",
     "Programming Language :: Python :: 3.12",
     "Programming Language :: Python :: 3.13",
+    "Programming Language :: Python :: 3.14",
     "Programming Language :: Python :: 3 :: Only",
     "Programming Language :: C++",
     "License :: OSI Approved :: GNU General Public License v2 or later (GPLv2+)",
@@ -56,7 +56,7 @@ classifiers = [
     "Intended Audience :: Developers",
     "Development Status :: 2 - Pre-Alpha",
 ]
-requires-python = ">=3.9.0,<4.0.0"
+requires-python = ">=3.10.0,<4.0.0"
 dynamic = ["version"]
 
 [project.urls]

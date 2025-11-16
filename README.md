@@ -7,7 +7,7 @@ Emulates the SID sound-chip in software. The C++ emulation code was copied over 
 
 Requirements for installation from source:
 - compiler for ISO C++20
-- Python 3.9+ and header files
+- Python 3.10+ and header files
 
 
 ### From PyPI

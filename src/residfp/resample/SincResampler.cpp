@@ -22,13 +22,14 @@
 
 #include "SincResampler.h"
 
-#ifdef HAVE_CXX20
-#  include <numbers>
-#endif
-
 #include <algorithm>
 #include <iterator>
 #include <numeric>
+#ifdef __has_include
+#  if __has_include(<version>)
+#    include <version>
+#  endif
+#endif
 #include <cassert>
 #include <cstring>
 #include <cmath>
@@ -36,14 +37,19 @@
 
 #include "siddefs-fp.h"
 
-#ifdef HAVE_CONFIG_H
-#  include "config.h"
+#include "sidcxx11.h"
+
+#ifdef __cpp_lib_math_constants
+#  include <numbers>
 #endif
 
-#ifdef HAVE_SMMINTRIN_H
-#  include <smmintrin.h>
-#elif defined(HAVE_ARM_NEON_H)
-#  include <arm_neon.h>
+
+#if __cpp_lib_constexpr_cmath >= 202306L
+#  define CONSTEXPR_FUNC  constexpr
+#  define CONSTEXPR_VAR   constexpr
+#else
+#  define CONSTEXPR_FUNC
+#  define CONSTEXPR_VAR   const
 #endif
 
 namespace reSIDfp
@@ -62,7 +68,8 @@ constexpr int BITS = 16;
  * @param x evaluate I0 at x
  * @return value of I0 at x.
  */
-constexpr double I0(double x)
+CONSTEXPR_FUNC
+double I0(double x)
 {
     double sum = 1.;
     double u = 1.;
