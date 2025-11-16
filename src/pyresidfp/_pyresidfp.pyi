@@ -15,7 +15,7 @@ reSIDfp SID (MOS6581 / MOS8580) extension
 from __future__ import annotations
 import typing
 
-__all__ = ["ChipModel", "SID", "SamplingMethod"]
+__all__: list[str] = ["ChipModel", "SID", "SamplingMethod"]
 
 class ChipModel:
     """
@@ -43,11 +43,11 @@ class ChipModel:
     def __getstate__(self) -> int: ...
     def __hash__(self) -> int: ...
     def __index__(self) -> int: ...
-    def __init__(self, value: int) -> None: ...
+    def __init__(self, value: typing.SupportsInt) -> None: ...
     def __int__(self) -> int: ...
     def __ne__(self, other: typing.Any) -> bool: ...
     def __repr__(self) -> str: ...
-    def __setstate__(self, state: int) -> None: ...
+    def __setstate__(self, state: typing.SupportsInt) -> None: ...
     def __str__(self) -> str: ...
     @property
     def name(self) -> str: ...
@@ -65,8 +65,8 @@ class SID:
         self,
         chip_model: ChipModel,
         method: SamplingMethod,
-        clock_frequency: float,
-        sampling_frequency: float,
+        clock_frequency: typing.SupportsFloat,
+        sampling_frequency: typing.SupportsFloat,
     ) -> None:
         """
         Creates a new instance of SID and sets sampling parameters.
@@ -97,7 +97,7 @@ class SID:
             >>> sid = SID(ChipModel.MOS6581, SamplingMethod.RESAMPLE, 985248.0, 48000.0)
         """
 
-    def clock(self, cycles: int) -> list[int]:
+    def clock(self, cycles: typing.SupportsInt) -> list[int]:
         """
         Clock SID forward using chosen output sampling algorithm and sample.
 
@@ -121,7 +121,7 @@ class SID:
             enable (bool): False to turn off filter emulation
         """
 
-    def input(self, value: int) -> None:
+    def input(self, value: typing.SupportsInt) -> None:
         """
         16-bit input (EXT IN). Write 16-bit sample to audio input. NB! The caller
         is responsible for keeping the value within 16 bits. Note that to mix in
@@ -132,7 +132,7 @@ class SID:
             value (int): Input level to set
         """
 
-    def mute(self, channel: int, enable: bool) -> None:
+    def mute(self, channel: typing.SupportsInt, enable: bool) -> None:
         """
         SID voice muting.
 
@@ -141,7 +141,7 @@ class SID:
             enable (bool): enable muting
         """
 
-    def read(self, offset: int) -> int:
+    def read(self, offset: typing.SupportsInt) -> int:
         """
         Read registers.
 
@@ -177,7 +177,7 @@ class SID:
             RuntimeError
         """
 
-    def set_filter_6581_curve(self, curve_position: float) -> None:
+    def set_filter_6581_curve(self, curve_position: typing.SupportsFloat) -> None:
         """
         Set filter curve parameter for 6581 model.
 
@@ -185,7 +185,7 @@ class SID:
             curve_position (float): 0 .. 1, where 0 sets center frequency high ("light") and 1 sets it low ("dark"), default is 0.5
         """
 
-    def set_filter_8580_curve(self, curve_position: float) -> None:
+    def set_filter_8580_curve(self, curve_position: typing.SupportsFloat) -> None:
         """
         Set filter curve parameter for 8580 model.
 
@@ -193,7 +193,7 @@ class SID:
             curve_position (float):
         """
 
-    def write(self, offset: int, value: int) -> None:
+    def write(self, offset: typing.SupportsInt, value: typing.SupportsInt) -> None:
         """
         Write registers.
 
@@ -217,7 +217,7 @@ class SID:
         """
 
     @clock_frequency.setter
-    def clock_frequency(self, arg1: float) -> None: ...
+    def clock_frequency(self, arg1: typing.SupportsFloat) -> None: ...
     @property
     def sampling_frequency(self) -> float:
         """
@@ -225,7 +225,7 @@ class SID:
         """
 
     @sampling_frequency.setter
-    def sampling_frequency(self, arg1: float) -> None: ...
+    def sampling_frequency(self, arg1: typing.SupportsFloat) -> None: ...
     @property
     def sampling_method(self) -> SamplingMethod:
         """
@@ -261,15 +261,15 @@ class SamplingMethod:
     def __getstate__(self) -> int: ...
     def __hash__(self) -> int: ...
     def __index__(self) -> int: ...
-    def __init__(self, value: int) -> None: ...
+    def __init__(self, value: typing.SupportsInt) -> None: ...
     def __int__(self) -> int: ...
     def __ne__(self, other: typing.Any) -> bool: ...
     def __repr__(self) -> str: ...
-    def __setstate__(self, state: int) -> None: ...
+    def __setstate__(self, state: typing.SupportsInt) -> None: ...
     def __str__(self) -> str: ...
     @property
     def name(self) -> str: ...
     @property
     def value(self) -> int: ...
 
-__version__: str = "0.15.3"
+__version__: str = "0.16.1"
