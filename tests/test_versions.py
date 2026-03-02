@@ -3,7 +3,6 @@ import re
 import pyresidfp
 import pyresidfp._pyresidfp as _pyresidfp
 
-
 BASE_VERSION_REGEX = re.compile(r"^([0-9]+\.[0-9]+(\.[0-9]+)?)(\.[^.]*)*$")
 
 
